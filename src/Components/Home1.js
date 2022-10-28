@@ -10,9 +10,12 @@ import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
 import clips from "../Images/clips.png";
 import calendar from "../Images/calendar.png";
+import gmail from "../Images/gmail.png";
 import { Line, Doughnut } from "react-chartjs-2";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
+import { Chart as ChartJS } from "chart.js/auto";
+import { Chart } from "react-chartjs-2";
 const drawerWidth = 266;
 
 function ResponsiveDrawer(props) {
@@ -28,8 +31,17 @@ function ResponsiveDrawer(props) {
       <Toolbar />
       <div></div>
       <Divider />
-      <div className="position-relative justify-content-center align-items-center d-flex p-2">
+      <div className="position-relative justify-content-center align-items-center d-flex py-2">
         <div>
+          <div className="text-center py-4 pb-5">
+            <span className="fa fa-book fa-4x text-white text-center"></span>
+            <div
+              className="text-white"
+              style={{ fontWeight: "700", fontSize: "25px" }}
+            >
+              <span style={{ color: "#00a82d" }}>Hand</span>Book
+            </div>
+          </div>
           <div
             className="fa fa-search text-white position-absolute"
             style={{ paddingInline: "12px", paddingTop: "13px" }}
@@ -48,14 +60,14 @@ function ResponsiveDrawer(props) {
         </div>
       </div>
       <div className="position-relative justify-content-center align-items-center d-flex px-2">
-        <div className="w-100 px-1">
+        <div className="w-100 px-3">
           <div
             className="fa fa-plus text-white position-absolute"
             style={{ paddingInline: "12px", paddingTop: "13px" }}
           ></div>
           <div
             className="fa fa-angle-down text-white position-absolute"
-            style={{ paddingInline: "12px", paddingTop: "13px", left: "80%" }}
+            style={{ paddingInline: "12px", paddingTop: "13px", left: "78%" }}
           ></div>
           <div
             className="border-0"
@@ -221,7 +233,7 @@ function ResponsiveDrawer(props) {
         >
           <Toolbar />
           <div className="contentBg" style={{ height: "70vh" }}>
-            <div className="content position-relative" style={{ top: "70%" }}>
+            <div className="content position-relative" style={{ top: "60%" }}>
               <div className="tab-content">
                 <div
                   id="home"
@@ -447,7 +459,24 @@ function ResponsiveDrawer(props) {
                   </div>
                 </div>
 
-                <div id="inbox" className="tab-pane fade p-4"></div>
+                <div id="inbox" className="tab-pane fade p-4">
+                  <div
+                    className="p-3"
+                    style={{
+                      borderRadius: "15px",
+                      background: "#1a1a1a",
+                    }}
+                  >
+                    <div className="text-white" style={{ fontWeight: "500" }}>
+                      INBOX
+                    </div>
+                    <img
+                      src={gmail}
+                      className="img-fluid mt-3"
+                      style={{ borderRadius: "15px", height: "85vh" }}
+                    />
+                  </div>
+                </div>
 
                 <div id="dropbox" className="tab-pane fade p-4">
                   <div
@@ -580,14 +609,20 @@ function ResponsiveDrawer(props) {
                   <div
                     className="p-3"
                     style={{
-                      height: "90vh",
+                      // height: "90vh",
                       borderRadius: "15px",
                       background: "#1a1a1a",
                     }}
                   >
                     <div className="row">
-                      <div className="col-4">
-                        <div className="py-4 rounded border-0 text-white" style={{background:"#262626", boxShadow:"0 1px 6px rgba(0,0,0,0.2)"}}>
+                      <div className="col-lg-4 col-md-4 col-sm-6 col-12 mb-lg-0 mb-md-0 mb-4">
+                        <div
+                          className="py-4 rounded border-0 text-white"
+                          style={{
+                            background: "#262626",
+                            boxShadow: "0 1px 6px rgba(0,0,0,0.2)",
+                          }}
+                        >
                           <div className="container">
                             <div className="row">
                               <div className="col-lg-6 col-md-12 col-12">
@@ -615,8 +650,14 @@ function ResponsiveDrawer(props) {
                           </div>
                         </div>
                       </div>
-                      <div className="col-4">
-                        <div className="py-4 rounded  border-0 text-white"  style={{background:"#262626", boxShadow:"0 1px 6px rgba(0,0,0,0.2)"}}>
+                      <div className="col-lg-4 col-md-4 col-sm-6 col-12 mb-lg-0 mb-md-0 mb-4">
+                        <div
+                          className="py-4 rounded  border-0 text-white"
+                          style={{
+                            background: "#262626",
+                            boxShadow: "0 1px 6px rgba(0,0,0,0.2)",
+                          }}
+                        >
                           <div className="container">
                             <div className="row ">
                               <div className="col-lg-6 col-md-12 col-12 ">
@@ -644,8 +685,14 @@ function ResponsiveDrawer(props) {
                           </div>
                         </div>
                       </div>
-                      <div className="col-4">
-                        <div className="py-4 rounded border-0 text-white"  style={{background:"#262626", boxShadow:"0 1px 6px rgba(0,0,0,0.2)"}}>
+                      <div className="col-lg-4 col-md-4 col-sm-6 col-12 mb-lg-0 mb-md-0 mb-4">
+                        <div
+                          className="py-4 rounded border-0 text-white"
+                          style={{
+                            background: "#262626",
+                            boxShadow: "0 1px 6px rgba(0,0,0,0.2)",
+                          }}
+                        >
                           <div className="container">
                             <div className="row">
                               <div className="col-lg-6 col-md-12 col-12">
@@ -674,37 +721,149 @@ function ResponsiveDrawer(props) {
                         </div>
                       </div>
 
-                      <div className="col-4">
-                      <div className="card justify-content-center d-flex align-items-center  border-0 text-white B py-4 lower1">
-                        <h5 className="mx-4 mt-5 position-absolute">
-                          Open Positions
-                        </h5>
-                        <div className="container">
-                          <h5 className="font-weight-bold">
-                            Open Positions By Department
-                          </h5>
-                          <Doughnut
-                            className="doughnut justify-content-center d-flex pb-2 gx-0 my-auto"
-                            data={{
-                              datasets: [
-                                {
-                                  label: "My First Dataset",
-                                  data: [45, 30, 25],
+                      <div className="col-lg-8 col-12 mt-lg-4 mt-md-4 mb-lg-0 mb-4">
+                        <div
+                          className="rounded border-0 text-white"
+                          style={{
+                            background: "#262626",
+                            boxShadow: "0 1px 6px rgba(0,0,0,0.2)",
+                          }}
+                        >
+                          <nav className="navbar rounded navbar-expand-lg navbar-light">
+                            <div className="container-fluid">
+                              <a className="navbar-brand text-white">
+                                Transactions
+                              </a>
 
-                                  backgroundColor: [
-                                    "purple",
-                                    "#dc3545",
-                                    "rgba(13, 124, 228, 0.808)",
-                                  ],
-                                  hoverOffset: 4,
-                                },
-                              ],
-                            }}
-                          />
+                              <ul className="navbar-nav">
+                                <li className="nav-item">
+                                  <a
+                                    className="nav-link active text-white"
+                                    aria-current="page"
+                                    href="#"
+                                  >
+                                    This Year
+                                  </a>
+                                </li>
+                                <li className="nav-item">
+                                  <a className="nav-link text-white" href="#">
+                                    This Week
+                                  </a>
+                                </li>
+                                <li className="nav-item">
+                                  <a className="nav-link text-white" href="#">
+                                    Today
+                                  </a>
+                                </li>
+                              </ul>
+                            </div>
+                          </nav>
+                          <div className="container">
+                            <Line
+                              className="chart"
+                              data={{
+                                labels: [
+                                  "jan",
+                                  "feb",
+                                  "mar",
+                                  "apr",
+                                  "may",
+                                  "jun",
+                                  "jul",
+                                  "aug",
+                                  "sept",
+                                  "oct",
+                                  "nov",
+                                  "dec",
+                                ],
+                                datasets: [
+                                  {
+                                    label: "Applications 2019",
+                                    data: [
+                                      1.5, 3, 3.2, 2.3, 4, 4.5, 3, 3.5, 5, 5.5,
+                                      4, 6,
+                                    ],
+                                    borderColor: ["rgba(194, 44, 44, 0.87)"],
+                                    backgroundColor: [
+                                      "rgba(197, 60, 60, 0.596)",
+                                    ],
+                                    // pointBackgroundColor: [
+                                    //   "rgba(194, 44, 44, 0.87)",
+                                    //   "rgba(194, 44, 44, 0.87)",
+                                    //   "rgba(194, 44, 44, 0.87)",
+                                    //   "rgba(194, 44, 44, 0.87)",
+                                    //   "white",
+                                    // ],
+
+                                    fontColor: ["White"],
+                                    fill: {
+                                      target: "origin",
+                                      above: "rgba(197, 60, 60, 0.596)",
+                                    },
+                                  },
+                                  {
+                                    label: "Applications 2020",
+
+                                    data: [
+                                      3, 2.2, 2.7, 3.4, 2.5, 3.5, 4, 3.5, 5,
+                                      4.5, 4, 5,
+                                    ],
+                                    borderColor: ["rgba(161, 223, 17, 0.568)"],
+                                    backgroundColor: [
+                                      "rgba(161, 223, 17, 0.568)",
+                                    ],
+                                    pointBackgroundColor: [
+                                      "rgba(161, 223, 17, 0.568)",
+                                      "rgba(161, 223, 17, 0.568)",
+                                      "rgba(161, 223, 17, 0.568)",
+                                      "rgba(161, 223, 17, 0.568)",
+                                      "white",
+                                    ],
+                                  },
+                                ],
+                                fontColor: "white",
+                              }}
+                            />
+                          </div>
                         </div>
                       </div>
-                      </div>
 
+                      <div className="col-lg-4 col-12 mt-lg-4">
+                        <div
+                          className="justify-content-center d-flex align-items-center border-0 text-white py-4"
+                          style={{
+                            background: "#262626",
+                            boxShadow: "0 1px 6px rgba(0,0,0,0.2)",
+                          }}
+                        >
+                          <h5 className="mx-4 mt-5 position-absolute">
+                            Transactions
+                          </h5>
+                          <div className="container">
+                            <h5 className="font-weight-bold">
+                              All Transactions
+                            </h5>
+                            <Doughnut
+                              className="doughnut justify-content-center d-flex pb-2 gx-0 my-auto"
+                              data={{
+                                datasets: [
+                                  {
+                                    label: "My First Dataset",
+                                    data: [72, 8, 20],
+
+                                    backgroundColor: [
+                                      "purple",
+                                      "#dc3545",
+                                      "rgba(13, 124, 228, 0.808)",
+                                    ],
+                                    hoverOffset: 4,
+                                  },
+                                ],
+                              }}
+                            />
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -728,7 +887,7 @@ function ResponsiveDrawer(props) {
                           CUSTOMIZE YOUR HOME
                         </div>
                         <div>
-                          With Evernote Personal you can add and remove widgets,
+                          With Hand Book you can add and remove widgets,
                           reorder and resize them, or change your background.
                         </div>
                       </div>

@@ -1,6 +1,7 @@
 body {
   background-color: black;
   scroll-behavior: smooth;
+  /* font-size: 17px !important; */
 }
 ::-webkit-scrollbar-track {
   background: rgb(131, 131, 131);
@@ -13,13 +14,7 @@ body {
 ::-webkit-scrollbar{
   width: 8px;
 }
-.modal-open{
-  overflow-y: scroll !important;
-  padding-right: 0 !important;
-}
-.offcanvas-backdrop.show {
-  opacity: 0;
-}
+
 .contentBg {
   background: url("./Images/download.png") no-repeat;
   transition: opacity 0.4s ease 0s, transform 200ms ease-out 0s,
@@ -29,17 +24,7 @@ body {
   background-attachment: fixed;
   /* transform: perspective(1000px) scale(1); */
 }
-.offcanvas-backdrop.fade.show {
-  pointer-events: none;
-}
-.dashboard {
-  margin-left: 17.6%;
-}
-@media (max-width: 990px) {
-  .dashboard {
-    margin-left: 0 !important;
-  }
-}
+
 
 
 
