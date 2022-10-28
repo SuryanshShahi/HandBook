@@ -1,38 +1,62 @@
-.App {
-  text-align: center;
+body {
+  background-color: black;
+  scroll-behavior: smooth;
 }
-
-.App-logo {
-  height: 40vmin;
+::-webkit-scrollbar-track {
+  background: rgb(131, 131, 131);
+  border-radius: 15px;
+}
+::-webkit-scrollbar-thumb {
+  background: rgb(48, 48, 48);
+  border-radius: 10px;
+}
+::-webkit-scrollbar{
+  width: 8px;
+}
+.modal-open{
+  overflow-y: scroll !important;
+  padding-right: 0 !important;
+}
+.offcanvas-backdrop.show {
+  opacity: 0;
+}
+.contentBg {
+  background: url("./Images/download.png") no-repeat;
+  transition: opacity 0.4s ease 0s, transform 200ms ease-out 0s,
+    background-position 200ms linear 0s, filter 800ms ease-in 0s;
+  filter: initial;
+  background-position: 60% 80%;
+  background-attachment: fixed;
+  /* transform: perspective(1000px) scale(1); */
+}
+.offcanvas-backdrop.fade.show {
   pointer-events: none;
 }
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
+.dashboard {
+  margin-left: 17.6%;
+}
+@media (max-width: 990px) {
+  .dashboard {
+    margin-left: 0 !important;
   }
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+
+
+.css-12i7wg6-MuiPaper-root-MuiDrawer-paper{
+  background-color: black !important;
+}
+.MuiToolbar-root{
+  position: absolute !important;
+}
+.DashTabs .tab.active{
+  border-radius: 15px;
+  background-color: #00a82d !important;
+}
+#home .tab.active{
+  color: #00a82d !important;
+  text-decoration:underline;
+}
+.tab{
   color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
 }
