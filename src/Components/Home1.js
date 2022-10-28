@@ -16,6 +16,8 @@ import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import { Chart as ChartJS } from "chart.js/auto";
 import { Chart } from "react-chartjs-2";
+
+
 const drawerWidth = 266;
 
 function ResponsiveDrawer(props) {
@@ -240,11 +242,11 @@ function ResponsiveDrawer(props) {
                   className="active tab-pane content position-relative"
                 >
                   <div className="row mx-3">
-                    <div className="col-lg-8 col-md-8 col-sm-8 col-12 mr-2">
+                    <div className="col-lg-8 col-12 mr-2">
                       <div
                         className="p-3"
                         style={{
-                          height: "50vh",
+                          minHeight: "50vh",
                           borderRadius: "15px",
                           background: "#1a1a1a",
                         }}
@@ -323,11 +325,11 @@ function ResponsiveDrawer(props) {
                       </div>
                     </div>
 
-                    <div className="col-lg-4 col-md-4 col-sm-4 col-12 ml-2 mt-lg-0 mt-md-0 mt-sm-0 mt-4">
+                    <div className="col-lg-4 col-12 ml-2 mt-lg-0 mt-4">
                       <div
                         className="p-3"
                         style={{
-                          height: "50vh",
+                          minHeight: "50vh",
                           borderRadius: "15px",
                           background: "rgb(38, 37, 28)",
                           border: "1px solid rgb(111, 108, 82)",
@@ -354,7 +356,7 @@ function ResponsiveDrawer(props) {
                       <div
                         className="p-3"
                         style={{
-                          height: "50vh",
+                          minHeight: "50vh",
                           borderRadius: "15px",
                           background: "#1a1a1a",
                         }}
