@@ -208,7 +208,7 @@ function ResponsiveDrawer(props) {
       <div id="content" style={{ display: "none" }} className="animate-bottom">
         <div className="">
           <AppBar
-            className="p-4"
+            className="p-2"
             sx={{
               background: "transparent",
               boxShadow: "none",
@@ -216,15 +216,21 @@ function ResponsiveDrawer(props) {
               ml: { sm: `${drawerWidth}px` },
             }}
           >
+           
             <div
-              className="d-flex align-items-center"
+              className="d-lg-flex d-md-flex d-sm-flex align-items-center navbar justify-content-center p-4 mt-lg-0 mt-md-0 mt-5"
               style={{
                 textShadow: "1px 1px 2px rgb(0 0 0 / 40%)",
               }}
             >
-              <div style={{ fontSize: "25px" }}>Good Morning, abc!</div>
               <div
-                className="px-5"
+                className=" mb-lg-0 mb-md-0 md-sm-0 mb-2"
+                style={{ fontSize: "25px" }}
+              >
+                Good Morning, abc!
+              </div>
+              <div
+                className="px-lg-5 px-md-5 px-3 mb-lg-0 mb-md-0 md-sm-0 mb-2"
                 id="dateandtime"
                 style={{ marginLeft: "auto", fontSize: "17px" }}
               ></div>
@@ -233,15 +239,19 @@ function ResponsiveDrawer(props) {
               </div>
             </div>
             <IconButton
-              className="position-absolute"
-              color="inherit"
-              aria-label="open drawer"
-              edge="start"
-              onClick={handleDrawerToggle}
-              sx={{ mr: 2, display: { sm: "none" }, color: "white" }}
-            >
-              <MenuIcon />
-            </IconButton>
+            className="position-absolute p-4 fa fa-bars"
+            color="inherit"
+            aria-label="open drawer"
+            edge="start"
+            onClick={handleDrawerToggle}
+            sx={{
+              mr: 2,
+              display: { sm: "none" },
+              color: "black"
+            }}
+          >
+            
+          </IconButton>
           </AppBar>
         </div>
 
@@ -353,7 +363,9 @@ function ResponsiveDrawer(props) {
                             <div id="recent" className="active tab-pane">
                               <div className="row">
                                 <div
-                                  className="col-3 text-white px-3 py-2 m-3"
+                                  className="col-lg-4 col-md-6 col-12 mb-lg-0 text-white px-3 py-2">
+                                  <div
+                                  className="p-3"
                                   style={{
                                     height: "290px",
                                     background: "#262626",
@@ -362,8 +374,11 @@ function ResponsiveDrawer(props) {
                                 >
                                   Untitled
                                 </div>
+                                </div>
                                 <div
-                                  className="col-3 text-white px-3 py-2 m-3"
+                                  className="col-lg-4 col-md-6 col-12 mb-lg-0 text-white px-3 py-2">
+                                  <div
+                                  className="p-3"
                                   style={{
                                     height: "290px",
                                     background: "#262626",
@@ -372,8 +387,11 @@ function ResponsiveDrawer(props) {
                                 >
                                   Untitled
                                 </div>
+                                </div>
                                 <div
-                                  className="col-3 text-white px-3 py-2 m-3"
+                                  className="col-lg-4 col-md-6 col-12 text-white px-3 py-2">
+                                  <div
+                                  className="p-3"
                                   style={{
                                     height: "290px",
                                     background: "#262626",
@@ -381,6 +399,7 @@ function ResponsiveDrawer(props) {
                                   }}
                                 >
                                   Untitled
+                                </div>
                                 </div>
                               </div>
                             </div>
