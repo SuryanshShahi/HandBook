@@ -681,18 +681,18 @@ function ResponsiveDrawer() {
                     <div
                       className="p-3"
                       style={{
-                        height: "90vh",
+                        // height: "90vh",
                         borderRadius: "15px",
                         background: "#1a1a1a",
                       }}
                     >
-                      <div className="text-white" style={{ fontWeight: "500" }}>
+                      <div className="text-white" style={{ fontWeight: "500"}}>
                         CALENDAR
                       </div>
                       <img
                         src={calendar}
                         className="img-fluid mt-3"
-                        style={{ borderRadius: "15px" }}
+                        style={{ borderRadius: "15px"}}
                       />
                     </div>
                   </div>
