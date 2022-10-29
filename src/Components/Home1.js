@@ -17,16 +17,31 @@ import "react-circular-progressbar/dist/styles.css";
 import { Chart as ChartJS } from "chart.js/auto";
 import { Chart } from "react-chartjs-2";
 
-
 const drawerWidth = 266;
 
 function ResponsiveDrawer(props) {
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
-
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
+
+  setInterval(() => {
+    document.getElementById("dateandtime").innerHTML = refreshDate(new Date())
+  }, 1000)
+  
+  
+    const refreshDate=(date)=> {
+      return date.toLocaleString([], {
+        weekday: 'long',
+        month: '2-digit',
+        day: '2-digit',
+        year: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    }
+
 
   const drawer = (
     <div>
@@ -173,16 +188,35 @@ function ResponsiveDrawer(props) {
   return (
     <div>
       <div className="">
-        <IconButton
-          className="position-absolute"
-          color="inherit"
-          aria-label="open drawer"
-          edge="start"
-          onClick={handleDrawerToggle}
-          sx={{ mr: 2, display: { sm: "none" }, color: "white" }}
+        <AppBar
+          className="p-3"
+          position="fixed"
+          sx={{
+            background: "transparent",
+            boxShadow: "none",
+            width: { sm: `calc(100% - ${drawerWidth}px)` },
+            ml: { sm: `${drawerWidth}px` },
+          }}
         >
-          <MenuIcon />
-        </IconButton>
+          <div className="d-flex align-items-center"
+            style={{
+              textShadow: "1px 1px 2px rgb(0 0 0 / 40%)",
+            }}
+          >
+            <div style={{fontSize:"20px"}}>Good Morning, abc!</div>
+            <div className="" id="dateandtime" style={{marginLeft:"auto", fontSize:"12px"}}></div>
+          </div>
+          <IconButton
+            className="position-absolute"
+            color="inherit"
+            aria-label="open drawer"
+            edge="start"
+            onClick={handleDrawerToggle}
+            sx={{ mr: 2, display: { sm: "none" }, color: "white" }}
+          >
+            <MenuIcon />
+          </IconButton>
+        </AppBar>
       </div>
 
       <Box sx={{ display: "flex" }}>
@@ -252,7 +286,11 @@ function ResponsiveDrawer(props) {
                         }}
                       >
                         <div className="text-white">
-                          NOTES <span className="fa fa-angle-right"></span>
+                          NOTES{" "}
+                          <span
+                            className="fa fa-angle-right"
+                            style={{ color: "#00a82d" }}
+                          ></span>
                         </div>
                         <ul
                           className="nav nav-tabs list-unstyled"
@@ -356,7 +394,7 @@ function ResponsiveDrawer(props) {
                       <div
                         className="p-3"
                         style={{
-                          minHeight: "50vh",
+                          height: "50vh",
                           borderRadius: "15px",
                           background: "#1a1a1a",
                         }}
@@ -889,8 +927,8 @@ function ResponsiveDrawer(props) {
                           CUSTOMIZE YOUR HOME
                         </div>
                         <div>
-                          With Hand Book you can add and remove widgets,
-                          reorder and resize them, or change your background.
+                          With Hand Book you can add and remove widgets, reorder
+                          and resize them, or change your background.
                         </div>
                       </div>
                     </div>
