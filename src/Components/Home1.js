@@ -19,15 +19,15 @@ import { Chart } from "react-chartjs-2";
 
 const drawerWidth = 266;
 
-function ResponsiveDrawer(props) {
-  document.body.onload = function () {
+function ResponsiveDrawer() {
+  window.onload = function () {
     setTimeout(() => {
       document.getElementById("loader").style.display = "none";
       document.getElementById("content").style.display = "block";
     }, 1000);
   };
 
-  const { window } = props;
+  // const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [navbar, setNavbar] = React.useState(false);
   const handleDrawerToggle = () => {
@@ -188,8 +188,8 @@ function ResponsiveDrawer(props) {
     </div>
   );
 
-  const container =
-    window !== undefined ? () => window().document.body : undefined;
+  // const container =
+  //   window !== undefined ? () => window().document.body : undefined;
 
 
   return (
@@ -264,7 +264,7 @@ function ResponsiveDrawer(props) {
           >
             {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
             <Drawer
-              container={container}
+              // container={container}
               variant="temporary"
               open={mobileOpen}
               onClose={handleDrawerToggle}
