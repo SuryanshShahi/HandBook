@@ -189,7 +189,7 @@ function ResponsiveDrawer(props) {
     <div>
       <div className="">
         <AppBar
-          className="p-3"
+          className="p-4"
           position="fixed"
           sx={{
             background: "transparent",
@@ -203,8 +203,9 @@ function ResponsiveDrawer(props) {
               textShadow: "1px 1px 2px rgb(0 0 0 / 40%)",
             }}
           >
-            <div style={{fontSize:"20px"}}>Good Morning, abc!</div>
-            <div className="" id="dateandtime" style={{marginLeft:"auto", fontSize:"12px"}}></div>
+            <div style={{fontSize:"25px"}}>Good Morning, abc!</div>
+            <div className="px-5" id="dateandtime" style={{marginLeft:"auto", fontSize:"17px"}}></div>
+            <div className="btn btn-dark"><span className="fa fa-edit"></span>&nbsp;Customize</div>
           </div>
           <IconButton
             className="position-absolute"

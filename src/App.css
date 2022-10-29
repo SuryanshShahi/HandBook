@@ -28,10 +28,45 @@ body {
 
 
 
-.MuiPaper-root .MuiPaper-elevation .MuiPaper-elevation0 .MuiDrawer-paper .MuiDrawer-paperAnchorLeft .MuiDrawer-paperAnchorDockedLeft .css-1l8j5k8{
+
+
+
+
+
+
+
+.navbar1.active {
+  animation: fadeNav 0.7s linear forwards;
+  background: white !important;
+  box-shadow: 0 8px 20px 0 rgb(0 0 0 / 10%);
+}
+
+.navbar1 {
+  transition: all 0.5s;
+  opacity: 1;
+  animation: fadeNavOut 0.9s linear forwards;
+}
+
+@keyframes fadeNav {
+  0% {
+    opacity: 0;
+    transform: translateY(-100%);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+
+
+
+.css-12i7wg6-MuiPaper-root-MuiDrawer-paper{
   background-color: black !important;
 }
-.css-12i7wg6-MuiPaper-root-MuiDrawer-paper{
+.MuiPaper-root .MuiPaper-elevation .MuiPaper-elevation0 .MuiDrawer-paper .MuiDrawer-paperAnchorLeft .MuiDrawer-paperAnchorDockedLeft .css-1l8j5k8{
   background-color: black !important;
 }
 .MuiToolbar-root{
