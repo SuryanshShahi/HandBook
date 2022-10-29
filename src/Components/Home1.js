@@ -188,7 +188,7 @@ function ResponsiveDrawer(props) {
     setTimeout(() => {
       document.getElementById("loader").style.display = "none";
       document.getElementById("content").style.display = "block";
-    }, 2000);
+    }, 1000);
   };
 
   return (
