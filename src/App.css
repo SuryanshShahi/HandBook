@@ -15,15 +15,7 @@ body {
   width: 8px;
 }
 
-.contentBg {
-  background: url("./Images/download.png") no-repeat;
-  transition: opacity 0.4s ease 0s, transform 200ms ease-out 0s,
-    background-position 200ms linear 0s, filter 800ms ease-in 0s;
-  filter: initial;
-  background-position: 60% 80%;
-  background-attachment: fixed;
-  /* transform: perspective(1000px) scale(1); */
-}
+
 
 
 
@@ -37,7 +29,7 @@ body {
 
 .navbar1.active {
   animation: fadeNav 0.7s linear forwards;
-  background: white !important;
+  background: red !important;
   box-shadow: 0 8px 20px 0 rgb(0 0 0 / 10%);
 }
 
@@ -60,15 +52,76 @@ body {
 }
 
 
-
-
-/* 
-.css-12i7wg6-MuiPaper-root-MuiDrawer-paper{
-  background-color: black !important;
+/* ------------------------------------Loader------------------------------------ */
+#spinner {
+  z-index: 1;
+  width: 150px;
+  height: 150px;
+  border: 10px solid #00a82d;
+  border-radius: 50%;
+  border-top: 10px solid transparent;
+  -webkit-animation: spin 2s linear infinite;
+  animation: spin 2s linear infinite;
 }
-.MuiPaper-root .MuiPaper-elevation .MuiPaper-elevation0 .MuiDrawer-paper .MuiDrawer-paperAnchorLeft .MuiDrawer-paperAnchorDockedLeft .css-1l8j5k8{
-  background-color: black !important;
-} */
+
+@-webkit-keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+.animate-bottom {
+  position: relative;
+  -webkit-animation-name: animatebottom;
+  -webkit-animation-duration: 1s;
+  animation-name: animatebottom;
+  animation-duration: 1s;
+}
+@-webkit-keyframes animatebottom {
+  from {
+    bottom: -100px;
+    opacity: 0;
+  }
+  to {
+    bottom: 0px;
+    opacity: 1;
+  }
+}
+
+@keyframes animatebottom {
+  from {
+    bottom: -100px;
+    opacity: 0;
+  }
+  to {
+    bottom: 0;
+    opacity: 1;
+  }
+}
+/* ------------------------------------------------------------------------ */
+
+
+/* ------------------------------------Home------------------------------------ */
+.contentBg {
+  background: url("./Images/download.png") no-repeat;
+  transition: opacity 0.4s ease 0s, transform 200ms ease-out 0s,
+    background-position 200ms linear 0s, filter 800ms ease-in 0s;
+  filter: initial;
+  background-position: 60% 80%;
+  background-attachment: fixed;
+  /* transform: perspective(1000px) scale(1); */
+}
 .MuiToolbar-root{
   position: absolute !important;
 }
