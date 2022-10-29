@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, {useState, useEffect} from "react";
 import PropTypes from "prop-types";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -20,16 +20,17 @@ import { Chart } from "react-chartjs-2";
 const drawerWidth = 266;
 
 function ResponsiveDrawer() {
-  window.onload = function () {
+ useEffect(() => {
     setTimeout(() => {
       document.getElementById("loader").style.display = "none";
       document.getElementById("content").style.display = "block";
     }, 1000);
-  };
+ }, [])
+ 
 
   // const { window } = props;
-  const [mobileOpen, setMobileOpen] = React.useState(false);
-  const [navbar, setNavbar] = React.useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [navbar, setNavbar] = useState(false);
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
