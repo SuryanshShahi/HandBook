@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -20,13 +20,12 @@ import { Chart } from "react-chartjs-2";
 const drawerWidth = 266;
 
 function ResponsiveDrawer() {
- useEffect(() => {
+  useEffect(() => {
     setTimeout(() => {
       document.getElementById("loader").style.display = "none";
       document.getElementById("content").style.display = "block";
     }, 1000);
- }, [])
- 
+  }, []);
 
   // const { window } = props;
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -192,7 +191,6 @@ function ResponsiveDrawer() {
   // const container =
   //   window !== undefined ? () => window().document.body : undefined;
 
-
   return (
     <div>
       <div id="loader">
@@ -218,21 +216,20 @@ function ResponsiveDrawer() {
               ml: { sm: `${drawerWidth}px` },
             }}
           >
-           
             <div
-              className="d-lg-flex d-md-flex d-sm-flex align-items-center navbar justify-content-center p-4 mt-lg-0 mt-md-0 mt-5"
+              className="d-lg-flex align-items-center text-lg-block text-center p-4 mt-lg-0 mt-md-0 mt-5"
               style={{
                 textShadow: "1px 1px 2px rgb(0 0 0 / 40%)",
               }}
             >
               <div
-                className=" mb-lg-0 mb-md-0 md-sm-0 mb-2"
+                className=" mb-lg-0 mb-3"
                 style={{ fontSize: "25px" }}
               >
                 Good Morning, abc!
               </div>
               <div
-                className="px-lg-5 px-md-5 px-3 mb-lg-0 mb-md-0 md-sm-0 mb-2"
+                className="px-lg-5 px-md-5 px-3 mb-lg-0 mb-2"
                 id="dateandtime"
                 style={{ marginLeft: "auto", fontSize: "17px" }}
               ></div>
@@ -241,19 +238,17 @@ function ResponsiveDrawer() {
               </div>
             </div>
             <IconButton
-            className="position-absolute p-4 fa fa-bars"
-            color="inherit"
-            aria-label="open drawer"
-            edge="start"
-            onClick={handleDrawerToggle}
-            sx={{
-              mr: 2,
-              display: { sm: "none" },
-              color: "black"
-            }}
-          >
-            
-          </IconButton>
+              className="position-absolute p-4 fa fa-bars"
+              color="inherit"
+              aria-label="open drawer"
+              edge="start"
+              onClick={handleDrawerToggle}
+              sx={{
+                mr: 2,
+                display: { sm: "none" },
+                color: "black",
+              }}
+            ></IconButton>
           </AppBar>
         </div>
 
@@ -364,44 +359,41 @@ function ResponsiveDrawer() {
                           <div className="tab-content">
                             <div id="recent" className="active tab-pane">
                               <div className="row">
-                                <div
-                                  className="col-lg-4 col-md-6 col-12 mb-lg-0 text-white px-3 py-2">
+                                <div className="col-lg-4 col-md-6 col-12 mb-lg-0 text-white px-3 py-2">
                                   <div
-                                  className="p-3"
-                                  style={{
-                                    height: "290px",
-                                    background: "#262626",
-                                    borderRadius: "15px",
-                                  }}
-                                >
-                                  Untitled
+                                    className="p-3"
+                                    style={{
+                                      height: "290px",
+                                      background: "#262626",
+                                      borderRadius: "15px",
+                                    }}
+                                  >
+                                    Untitled
+                                  </div>
                                 </div>
-                                </div>
-                                <div
-                                  className="col-lg-4 col-md-6 col-12 mb-lg-0 text-white px-3 py-2">
+                                <div className="col-lg-4 col-md-6 col-12 mb-lg-0 text-white px-3 py-2">
                                   <div
-                                  className="p-3"
-                                  style={{
-                                    height: "290px",
-                                    background: "#262626",
-                                    borderRadius: "15px",
-                                  }}
-                                >
-                                  Untitled
+                                    className="p-3"
+                                    style={{
+                                      height: "290px",
+                                      background: "#262626",
+                                      borderRadius: "15px",
+                                    }}
+                                  >
+                                    Untitled
+                                  </div>
                                 </div>
-                                </div>
-                                <div
-                                  className="col-lg-4 col-md-6 col-12 text-white px-3 py-2">
+                                <div className="col-lg-4 col-md-6 col-12 text-white px-3 py-2">
                                   <div
-                                  className="p-3"
-                                  style={{
-                                    height: "290px",
-                                    background: "#262626",
-                                    borderRadius: "15px",
-                                  }}
-                                >
-                                  Untitled
-                                </div>
+                                    className="p-3"
+                                    style={{
+                                      height: "290px",
+                                      background: "#262626",
+                                      borderRadius: "15px",
+                                    }}
+                                  >
+                                    Untitled
+                                  </div>
                                 </div>
                               </div>
                             </div>
@@ -686,13 +678,13 @@ function ResponsiveDrawer() {
                         background: "#1a1a1a",
                       }}
                     >
-                      <div className="text-white" style={{ fontWeight: "500"}}>
+                      <div className="text-white" style={{ fontWeight: "500" }}>
                         CALENDAR
                       </div>
                       <img
                         src={calendar}
                         className="img-fluid mt-3"
-                        style={{ borderRadius: "15px"}}
+                        style={{ borderRadius: "15px" }}
                       />
                     </div>
                   </div>
