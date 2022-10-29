@@ -20,6 +20,13 @@ import { Chart } from "react-chartjs-2";
 const drawerWidth = 266;
 
 function ResponsiveDrawer(props) {
+  document.body.onload = function () {
+    setTimeout(() => {
+      document.getElementById("loader").style.display = "none";
+      document.getElementById("content").style.display = "block";
+    }, 1000);
+  };
+
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [navbar, setNavbar] = React.useState(false);
@@ -184,12 +191,6 @@ function ResponsiveDrawer(props) {
   const container =
     window !== undefined ? () => window().document.body : undefined;
 
-  document.body.onload = function () {
-    setTimeout(() => {
-      document.getElementById("loader").style.display = "none";
-      document.getElementById("content").style.display = "block";
-    }, 1000);
-  };
 
   return (
     <div>
