@@ -239,7 +239,7 @@ function ResponsiveDrawer(props) {
               display: { xs: "block", sm: "none" },
               "& .MuiDrawer-paper": {
                 boxSizing: "border-box",
-                width: drawerWidth,
+                width: drawerWidth, background:"black"
               },
             }}
           >
@@ -251,7 +251,7 @@ function ResponsiveDrawer(props) {
               display: { xs: "none", sm: "block" },
               "& .MuiDrawer-paper": {
                 boxSizing: "border-box",
-                width: drawerWidth,
+                width: drawerWidth, background:"black"
               },
             }}
             open
