@@ -61,12 +61,12 @@ router.post("/signup1", async (req, res) => {
 
 router.post("/login", async (req, res) => {
   try {
-    const { email, password } = req.body;
-    if (!email || !password) {
+    const { text, password } = req.body;
+    if (!text || !password) {
       return res.status(400).json({ message: "all fields are mandatory" });
     }
 
-    const userExist = await User.findOne({ email: email });
+    const userExist = await User.findOne({ email: text });
     if (userExist) {
       const isMatch = await bcrypt.compare(password, userExist.password);
       if (!isMatch) {

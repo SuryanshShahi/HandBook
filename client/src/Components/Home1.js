@@ -39,6 +39,9 @@ import draftToHtml from "draftjs-to-html";
 import { AudioRecorder, useAudioRecorder } from "react-audio-voice-recorder";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+// import { Document, Page } from "react-pdf";
+import { Document, Page } from "react-pdf/dist/esm/entry.webpack5";
+import ssss from "../Images/New Doc 2019-08-11 09.05.05.pdf";
 
 function ResponsiveDrawer() {
   useEffect(() => {
@@ -46,6 +49,7 @@ function ResponsiveDrawer() {
       document.getElementById("loader").style.display = "none";
       document.getElementById("content").style.display = "block";
     }, 1000);
+    console.log(docItem);
   }, []);
 
   const [drawerWidth, setdrawerWidth] = useState(266);
@@ -306,6 +310,57 @@ function ResponsiveDrawer() {
       position: toast.POSITION.BOTTOM_RIGHT,
       className: "toast-message",
     });
+  };
+
+  // ------------------------------------------------------------------------------------------------------------------
+  // ---------------------------------------------------File Upload-------------------------------------------------------
+  // ------------------------------------------------------------------------------------------------------------------
+
+  const [file, setFile] = useState([]);
+  const handleChange = (e) => {
+    console.log(e.target.files);
+    const selectedFiles = Array.from(e.target.files);
+    const images = selectedFiles.map((e) => {
+      return URL.createObjectURL(e);
+    });
+    // setFile([...file, images]);
+    setFile((prev) => prev.concat(images));
+    console.log(images);
+  };
+
+  // ------------------------------------------------------------------------------------------------------------------
+  // ---------------------------------------------------Doc Upload-------------------------------------------------------
+  // ------------------------------------------------------------------------------------------------------------------
+
+  const [numPages, setNumPages] = useState(null);
+  const [pageNumber, setPageNumber] = useState(1);
+
+  const onDocumentLoadSuccess = ({ numPages }) => {
+    setNumPages(numPages);
+  };
+  const [doc, setDoc] = useState([]);
+  const [docItem, setDocItem] = useState(doc);
+  function docUpload(e) {
+    console.log(e.target.files);
+    const selectedFiles = Array.from(e.target.files);
+    const document = selectedFiles.map((e) => {
+      return URL.createObjectURL(e);
+    });
+    setDoc((prev) => prev.concat(document));
+    // console.log(doc);
+  }
+
+  const filterDoc = (id) => {
+    // const updatedDoc = doc.filter((e) => {
+    //   if (e === id) {
+    //     return e;
+    //     // console.log(true);
+    //   }
+    // });
+    // console.log(updatedDoc);
+    setDocItem(() => doc.filter((e) => (e === id ? e : 0)));
+    // setDocItem((prev) => prev.concat(updatedDoc));
+    console.log(docItem);
   };
 
   // ------------------------------------------------------------------------------------------------------------------
@@ -959,136 +1014,336 @@ function ResponsiveDrawer() {
                       <div
                         className="p-3"
                         style={{
-                          height: "90vh",
+                          // height: "90vh",
                           borderRadius: "15px",
                           background: "#1a1a1a",
                         }}
                       >
                         <div className="text-white">RECENTLY CAPTURED</div>
-                        <ul
-                          className="nav nav-tabs list-unstyled"
-                          style={{
-                            color: "black",
-                            borderBottom: "none",
-                            fontSize: "17px",
-                          }}
-                        >
-                          <li className="active py-2">
+                        <div className="d-flex align-items-center">
+                          <ul
+                            className="nav nav-tabs list-unstyled"
+                            style={{
+                              color: "black",
+                              borderBottom: "none",
+                              fontSize: "17px",
+                            }}
+                          >
+                            <li className="active py-2">
+                              <div
+                                className="active mr-3 tab"
+                                type="button"
+                                data-toggle="tab"
+                                href="#images1"
+                              >
+                                Images
+                              </div>
+                            </li>
+                            <li className="py-2">
+                              <div
+                                className="mx-3 tab"
+                                type="button"
+                                data-toggle="tab"
+                                href="#documents1"
+                              >
+                                Documents
+                              </div>
+                            </li>
+                            <li className="py-2">
+                              <div
+                                className="mx-3 tab"
+                                type="button"
+                                data-toggle="tab"
+                                href="#audio1"
+                              >
+                                Audio
+                              </div>
+                            </li>
+                            <li className="py-2">
+                              <div
+                                className="mx-3 tab"
+                                type="button"
+                                data-toggle="tab"
+                                href="#emails1"
+                              >
+                                Emails
+                              </div>
+                            </li>
+                          </ul>
+                          <div className="ml-auto position-relative">
                             <div
-                              className="active mr-3 tab"
-                              type="button"
-                              data-toggle="tab"
-                              href="#images1"
+                              className="btn btn-dark position-absolute bg-transparent px-4 text-primary imageBtn"
+                              style={{
+                                fontWeight: "500",
+                                width: "144px",
+                                right: "4px",
+                                bottom: "-4px",
+                                border: "1px solid #737373",
+                              }}
                             >
-                              Images
+                              Take a photo
                             </div>
-                          </li>
-                          <li className="py-2">
-                            <div
-                              className="mx-3 tab"
-                              type="button"
-                              data-toggle="tab"
-                              href="#documents1"
-                            >
-                              Documents
-                            </div>
-                          </li>
-                          <li className="py-2">
-                            <div
-                              className="mx-3 tab"
-                              type="button"
-                              data-toggle="tab"
-                              href="#audio1"
-                            >
-                              Audio
-                            </div>
-                          </li>
-                          <li className="py-2">
-                            <div
-                              className="mx-3 tab"
-                              type="button"
-                              data-toggle="tab"
-                              href="#emails1"
-                            >
-                              Emails
-                            </div>
-                          </li>
-                        </ul>
-                        <div className="tab-content" style={{ height: "83%" }}>
+                            <input
+                              type="file"
+                              style={{
+                                width: "147px",
+                                opacity: "0",
+                                cursor: "pointer",
+                              }}
+                              onChange={handleChange}
+                              multiple
+                            />
+                          </div>
+                        </div>
+                        <div className="tab-content mt-4">
                           <div
                             id="images1"
                             className="active tab-pane"
-                            style={{ height: "100%" }}
+                            style={{ height: "75vh" }}
                           >
                             <div
                               className="justify-content-center d-flex align-items-center"
                               style={{ height: "100%" }}
                             >
-                              <div className="text-center">
-                                <img
-                                  src={Image}
-                                  className="img-fluid"
-                                  style={{ width: "7vw" }}
-                                />
-                                <div
-                                  className="text-center my-3"
-                                  style={{
-                                    color: "#a6a6a6",
-                                    fontWeight: "500",
-                                  }}
-                                >
-                                  Keep images, receipts, and records in one
-                                  place.
-                                </div>
-                                <div
-                                  className="btn btn-dark bg-transparent px-4 mt-4 text-primary imageBtn"
-                                  style={{
-                                    fontWeight: "500",
-                                    border: "1px solid #737373",
-                                  }}
-                                >
-                                  Take a photo
-                                </div>
+                              <div className="w-100">
+                                {file.length === 0 ? (
+                                  <div className="text-center">
+                                    <img
+                                      src={Image}
+                                      className="img-fluid"
+                                      style={{ width: "7vw" }}
+                                    />
+                                    <div
+                                      className="text-center my-3"
+                                      style={{
+                                        color: "#a6a6a6",
+                                        fontWeight: "500",
+                                      }}
+                                    >
+                                      Keep images, receipts, and records in one
+                                      place.
+                                    </div>
+                                    <div
+                                      className="btn btn-dark bg-transparent px-4 mt-4 text-primary imageBtn"
+                                      style={{
+                                        fontWeight: "500",
+                                        border: "1px solid #737373",
+                                      }}
+                                    >
+                                      Take a photo
+                                    </div>
+                                  </div>
+                                ) : (
+                                  <div style={{ height: "74vh" }}>
+                                    <div
+                                      className="d-flex flex-wrap"
+                                      style={{
+                                        height: "100%",
+                                        overflow: "scroll",
+                                        alignContent: "flex-start",
+                                      }}
+                                    >
+                                      {file.map((image) => {
+                                        return (
+                                          <div
+                                            className="mr-3 mb-3 position-relative"
+                                            style={{
+                                              width: "150px",
+                                              height: "200px",
+                                            }}
+                                            key={image}
+                                            onClick={() => console.log(image)}
+                                          >
+                                            <img
+                                              className="uploadedImg"
+                                              src={image}
+                                              style={{
+                                                cursor: "pointer",
+                                                width: "150px",
+                                                height: "200px",
+                                              }}
+                                            />
+                                            <div
+                                              id={image}
+                                              className="position-absolute py-3 px-3 shadow text-dark"
+                                              onMouseOver={() =>
+                                                (document.getElementById(
+                                                  `${image}`
+                                                ).style.opacity = "1")
+                                              }
+                                              onMouseLeave={() =>
+                                                (document.getElementById(
+                                                  `${image}`
+                                                ).style.opacity = "0")
+                                              }
+                                              style={{
+                                                transition: "0.5s",
+                                                background:
+                                                  "rgba(0, 0, 0, 0.95)",
+                                                top: 0,
+                                                height: "200px",
+                                                opacity: 0,
+                                                width: "100%",
+                                              }}
+                                            >
+                                              <div
+                                                className="position-absolute fa fa-trash-o p-3 deleteImg text-white"
+                                                style={{
+                                                  color: "white",
+                                                  left: "35%",
+                                                  top: "40%",
+                                                  border: "2px solid white",
+                                                  transition: "0.5s",
+                                                  borderRadius: "50px",
+                                                  lineHeight: "0",
+                                                  cursor: "pointer",
+                                                }}
+                                                onClick={() =>
+                                                  setFile(
+                                                    file.filter(
+                                                      (e) => e !== image
+                                                    )
+                                                  )
+                                                }
+                                              ></div>
+                                            </div>
+                                          </div>
+                                        );
+                                      })}
+                                    </div>
+                                  </div>
+                                )}
                               </div>
                             </div>
                           </div>
                           <div
                             id="documents1"
                             className="tab-pane"
-                            style={{ height: "100%" }}
+                            style={{ height: "75vh" }}
                           >
                             <div
                               className="justify-content-center d-flex align-items-center"
                               style={{ height: "100%" }}
                             >
-                              <div className="text-center">
-                                <img
-                                  src={Doc}
-                                  className="img-fluid"
-                                  style={{ width: "7vw" }}
-                                />
-                                <div
-                                  className="text-center my-3"
-                                  style={{
-                                    color: "#a6a6a6",
-                                    fontWeight: "500",
-                                  }}
-                                >
-                                  Store PDFs, documents, and presentations for
-                                  safe keeping.
+                              {" "}
+                              {doc.length === 0 ? (
+                                <div className="text-center">
+                                  <img
+                                    src={Doc}
+                                    className="img-fluid"
+                                    style={{ width: "7vw" }}
+                                  />
+                                  <div
+                                    className="text-center my-3"
+                                    style={{
+                                      color: "#a6a6a6",
+                                      fontWeight: "500",
+                                    }}
+                                  >
+                                    Store PDFs, documents, and presentations for
+                                    safe keeping.
+                                  </div>
+                                  <div
+                                    className="btn btn-dark bg-transparent px-4 text-primary imageBtn mt-4"
+                                    style={{
+                                      fontWeight: "500",
+                                      border: "1px solid #737373",
+                                    }}
+                                  >
+                                    Save documents
+                                  </div>
+                                  <input type="file" onChange={docUpload} />
                                 </div>
-                                <div
-                                  className="btn btn-dark bg-transparent px-4 text-primary imageBtn mt-4"
-                                  style={{
-                                    fontWeight: "500",
-                                    border: "1px solid #737373",
-                                  }}
-                                >
-                                  Save documents
+                              ) : (
+                                <div>
+                                  {docItem.map((e) => {
+                                    return (
+                                      <div key={e}>
+                                        <div
+                                          className="modal fade"
+                                          id="mymodal3"
+                                          style={{ top: "25%" }}
+                                        >
+                                          <div className="modal-dialog">
+                                            <div
+                                              className="modal-content p-5"
+                                              style={{ background: "#1a1a1a" }}
+                                            >
+                                              <div
+                                                className="position-absolute text-white"
+                                                style={{
+                                                  fontSize: "40px",
+                                                  zIndex: 1,
+                                                }}
+                                              >
+                                                Document
+                                              </div>
+                                              <Document
+                                                file={e}
+                                                onLoadSuccess={
+                                                  onDocumentLoadSuccess
+                                                }
+                                              >
+                                                <Page pageNumber={pageNumber} />
+                                              </Document>
+                                              <div className="d-flex position-absolute">
+                                                <div
+                                                  className="btn btn-primary"
+                                                  onClick={() =>
+                                                    setPageNumber((e) =>
+                                                      e <= 1 ? e : e - 1
+                                                    )
+                                                  }
+                                                >
+                                                  back
+                                                </div>
+                                                <p className="text-white">
+                                                  Page {pageNumber} of{" "}
+                                                  {numPages}
+                                                </p>
+                                                <div
+                                                  className="btn btn-primary"
+                                                  onClick={() =>
+                                                    setPageNumber((e) =>
+                                                      e === numPages ? e : e + 1
+                                                    )
+                                                  }
+                                                >
+                                                  next
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    );
+                                  })}
+                                  <input type="file" onChange={docUpload} />
+                                  <div
+                                    className="btn btn-primary"
+                                    data-target="#mymodal3"
+                                    data-toggle="modal"
+                                  >
+                                    open modal
+                                  </div>
+                                  {doc.map((e) => {
+                                    return (
+                                      <div key={e}>
+                                        <div
+                                          data-target="#mymodal3"
+                                          data-toggle="modal"
+                                          onClick={() => filterDoc(e)}
+                                        >
+                                          {e}
+                                        </div>
+                                      </div>
+                                    );
+                                  })}
                                 </div>
-                              </div>
+                              )}
                             </div>
                           </div>
+
                           <div
                             id="audio1"
                             className="tab-pane"
@@ -1137,12 +1392,14 @@ function ResponsiveDrawer() {
                                     className="modal-content p-5"
                                     style={{ background: "#1a1a1a" }}
                                   >
-                                    <div className="position-relative ml-5"><AudioRecorder
-                                    onRecordingComplete={(e) =>
-                                      addAudioElement(e)
-                                    }
-                                    recorderControls={recorderControls}
-                                  /></div>
+                                    <div className="position-relative ml-5">
+                                      <AudioRecorder
+                                        onRecordingComplete={(e) =>
+                                          addAudioElement(e)
+                                        }
+                                        recorderControls={recorderControls}
+                                      />
+                                    </div>
                                     <div className="d-flex">
                                       <button
                                         onClick={

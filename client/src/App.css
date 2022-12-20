@@ -5,6 +5,10 @@ body {
 .toast-message {
   background-color: rgba(0, 0, 0, 0.6) !important;
 }
+.toast-login {
+  background-color: black !important;
+  color: "white" !important;
+}
 ::-webkit-scrollbar-track {
   background: rgb(131, 131, 131);
   border-radius: 15px;
@@ -15,6 +19,9 @@ body {
 }
 ::-webkit-scrollbar {
   width: 8px;
+}
+input[type="file"]::-webkit-file-upload-button {
+  cursor: pointer;
 }
 
 .navbar1.active {
@@ -118,6 +125,10 @@ body {
 .removeBtn {
   opacity: 0;
 }
+.deleteImg:hover {
+  background-color: #5082ff;
+  border: 2px solid #5082ff !important;
+}
 .itemsCard:hover .openEditor {
   opacity: 1;
 }
@@ -132,7 +143,7 @@ body {
   border: 2px solid #5082ff !important;
   color: white !important;
 }
-.imageBtn:hover{
+.imageBtn:hover {
   border: 1px solid #0d6efd !important;
 }
 .addItems,
@@ -142,7 +153,6 @@ body {
 .addItems:hover {
   box-shadow: 0 2px 16px rgba(0, 0, 0, 0.9) !important;
   background-color: #333333 !important;
-  border-radius: 15px !important;
 }
 #home {
   background-color: black;
@@ -311,22 +321,34 @@ button:focus {
   height: fit-content !important;
 }
 
-
 /* ---------------------------------------------------Recorder---------------------------------------------- */
 
-.audio-recorder{
+.audio-recorder {
   background-color: white !important;
-    box-shadow: 0 2px 5px #bebebe45 !important; 
-    border-radius: 20px;
-    color: #5082ff;
-    width: 40px;
-    display: flex;
-    align-items: center;
-    padding: 12px;
-    transition: all .2s ease-in;
+  box-shadow: 0 2px 5px #bebebe45 !important;
+  border-radius: 20px;
+  color: #5082ff;
+  width: 40px;
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  transition: all 0.2s ease-in;
 }
-audio{
+audio {
   margin-left: 22%;
   margin-top: -100px;
   display: flex;
+}
+
+
+.react-pdf__Page{
+  position: absolute !important;
+  top: 122px;
+}
+/* .react-pdf__Page__textContent{
+  display: none !important ;
+} */
+.react-pdf__Document,.react-pdf__Page__canvas{
+  height: 250px !important;
+  width: 250px !important;
 }

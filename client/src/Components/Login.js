@@ -1,8 +1,12 @@
+import axios from "axios";
 import React, { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useHistory } from "react-router-dom";
 import googleLogo from "../Images/google.png";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function Login() {
+  const history = useHistory();
   // let name, value;
   // const handleInputs = (e) => {
   //   console.log(e);
@@ -30,14 +34,59 @@ function Login() {
 
     const data = res.json();
     if (res.status === 201) {
+      toast.warning("Logged In !", {
+        position: toast.POSITION.BOTTOM_RIGHT,
+        className: "toast-login",
+      });
+      history.push("/");
       console.log("Login Successful");
     } else {
+      toast.error("Invalid Credentials !", {
+        position: toast.POSITION.BOTTOM_RIGHT,
+        className: "toast-login",
+      });
       console.log("Invalid Credentials");
     }
   };
 
+  // const PostData = async (e) => {
+  //   e.preventDefault();
+  //   console.log(text);
+  //   console.log(password);
+  //   fetch("/login", {
+  //     method: "POST",
+  //     PORT: "5000",
+  //     headers: { "Content-Type": "application/json" },
+  //     body: JSON.stringify({
+  //       text,
+  //       password,
+  //     }),
+  //   })
+  //     .then(() => console.log("res"))
+  //     .catch((err) => console.log(err));
+
+  //  axios
+  //   .post("/login", {
+  //     text,
+  //     password,
+  //   })
+  //   .then((res)=> {
+  //     console.log(res);
+  //   })
+  //   .catch((error)=> {
+  //     console.log(error);
+  //   });
+
+  // const data = res.json();
+  // if (res.status === 201) {
+  //   console.log("Login Successful");
+  // } else {
+  //   console.log("Invalid Credentials");
+  // }
+
   return (
     <section>
+      <ToastContainer />
       <div
         id="loginSignup"
         className="justify-content-center d-flex align-items-center"

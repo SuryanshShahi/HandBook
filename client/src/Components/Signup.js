@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 import googleLogo from "../Images/google.png";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function Signup() {
   const [user, setUser] = useState({
@@ -32,19 +34,40 @@ function Signup() {
     });
     const data = await res.json();
     if (res.status === 422 || !data) {
+      toast.warning("All fields are mandatory !", {
+        position: toast.POSITION.BOTTOM_RIGHT,
+        className: "toast-login",
+      });
       console.log("All fields are mandatory");
     } else if (res.status === 409) {
+      toast.warning("Email already exists!", {
+        position: toast.POSITION.BOTTOM_RIGHT,
+        className: "toast-login",
+      });
       console.log("Email already exists");
     } else if (res.status === 401) {
+      toast.warning("Password Didn't Match !", {
+        position: toast.POSITION.BOTTOM_RIGHT,
+        className: "toast-login",
+      });
       console.log("Password Didn't Match");
     } else if (res.status === 201) {
+      toast.success("SignUp Successful !", {
+        position: toast.POSITION.BOTTOM_RIGHT,
+        className: "toast-login",
+      });
       console.log("SignUp Successful");
     } else {
+      toast.error("Invalid Credentials !", {
+        position: toast.POSITION.BOTTOM_RIGHT,
+        className: "toast-login",
+      });
       console.log("Invalid Credentials");
     }
   };
   return (
     <section>
+      <ToastContainer />
       <div
         id="loginSignup"
         className="justify-content-center d-flex align-items-center"
