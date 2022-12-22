@@ -8,6 +8,7 @@ import Home from "./Components/Home1";
 import Login from "./Components/Login";
 import Signup from "./Components/Signup";
 import Calendar from "./Components/Calendar1";
+import Profile from "./Components/Profile";
 
 const App = () => {
   useEffect(() => {
@@ -22,6 +23,7 @@ const App = () => {
             <Route exact path="/login" component={Login} />
             <Route exact path="/signup" component={Signup} />
             <Route exact path="/calendar" component={Calendar} />
+            <Route exact path="/profile" component={Profile} />
           </Switch>
         </BrowserRouter>
       </div>
@@ -29,4 +31,3 @@ const App = () => {
   );
 };
 export default App;
-

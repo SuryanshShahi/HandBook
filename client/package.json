@@ -2,7 +2,7 @@
   "name": "digi-locker",
   "version": "0.1.0",
   "private": true,
-  "proxy":"http://localhost:5000",
+  "proxy": "http://localhost:5000",
   "dependencies": {
     "@emailjs/browser": "^3.10.0",
     "@emotion/react": "^11.10.5",
@@ -10,6 +10,8 @@
     "@mui/icons-material": "^5.10.9",
     "@mui/material": "^5.10.11",
     "@mui/styled-engine": "^5.10.8",
+    "@react-pdf-viewer/core": "^3.9.0",
+    "@react-pdf-viewer/default-layout": "^3.9.0",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
@@ -22,6 +24,7 @@
     "express": "^4.18.2",
     "font-awesome": "^4.7.0",
     "mongoose": "^6.8.0",
+    "pdfjs-dist": "^3.1.81",
     "react": "^18.2.0",
     "react-audio-voice-recorder": "^1.0.4",
     "react-big-calendar": "^1.5.2",
@@ -59,5 +62,6 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "devDependencies": {}
 }

@@ -1,20 +1,15 @@
 import React, { useState, useEffect, useRef } from "react";
-import emailjs from "@emailjs/browser";
 import PropTypes from "prop-types";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
-import CssBaseline from "@mui/material/CssBaseline";
 import Divider from "@mui/material/Divider";
 import Drawer from "@mui/material/Drawer";
 import IconButton from "@mui/material/IconButton";
-import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
 import Image from "../Images/image.png";
 import Audio from "../Images/audio.png";
 import Doc from "../Images/document.png";
 import Email from "../Images/emails.png";
-import calendar from "../Images/calendar.png";
-import gmail from "../Images/gmail.png";
 import { Line, Doughnut } from "react-chartjs-2";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
@@ -39,42 +34,88 @@ import draftToHtml from "draftjs-to-html";
 import { AudioRecorder, useAudioRecorder } from "react-audio-voice-recorder";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-// import { Document, Page } from "react-pdf";
-import { Document, Page } from "react-pdf/dist/esm/entry.webpack5";
-import ssss from "../Images/New Doc 2019-08-11 09.05.05.pdf";
+import emailjs from "@emailjs/browser";
+import { ProgressBar, Viewer, Worker } from "@react-pdf-viewer/core";
+import { defaultLayoutPlugin } from "@react-pdf-viewer/default-layout";
+import "@react-pdf-viewer/core/lib/styles/index.css";
+import "@react-pdf-viewer/default-layout/lib/styles/index.css";
+import { NavLink, useHistory } from "react-router-dom";
+const getEditor = () => {
+  let list1 = localStorage.getItem("list1");
+  if (list1) {
+    return JSON.parse(list1);
+  } else {
+    return [];
+  }
+};
+const getImages = () => {
+  let list2 = localStorage.getItem("list2");
+  if (list2) {
+    return JSON.parse(list2);
+  } else {
+    return [];
+  }
+};
+const getDoc = () => {
+  let list4 = localStorage.getItem("list4");
+  if (list4) {
+    return JSON.parse(list4);
+  } else {
+    return [];
+  }
+};
 
+const getTransactions = () => {
+  let list5 = localStorage.getItem("list5");
+  if (list5) {
+    return JSON.parse(list5);
+  } else {
+    return [];
+  }
+};
 function ResponsiveDrawer() {
+  const newPlugin = defaultLayoutPlugin();
   useEffect(() => {
+    document.body.style.background = "black";
+    callProfilePage();
     setTimeout(() => {
       document.getElementById("loader").style.display = "none";
       document.getElementById("content").style.display = "block";
     }, 1000);
-    console.log(docItem);
   }, []);
-
+  const history = useHistory();
   const [drawerWidth, setdrawerWidth] = useState(266);
   const [isExpanded, setExpanded] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [navbar, setNavbar] = useState(false);
+  const [navbar, setNavbar] = useState(true);
   const [isActive, setActive] = useState(false);
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
 
-  setInterval(() => {
-    document.getElementById("dateandtime").innerHTML = refreshDate(new Date());
-  }, 1000);
-
-  const refreshDate = (date) => {
-    return date.toLocaleString([], {
-      weekday: "long",
-      month: "2-digit",
-      day: "2-digit",
-      year: "2-digit",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
+  const changeNavbar = () => {
+    if (window.scrollY > 150) {
+      setNavbar(false);
+    } else {
+      setNavbar(true);
+    }
   };
+  window.addEventListener("scroll", changeNavbar);
+
+  // setInterval(() => {
+  //   document.getElementById("dateandtime").innerHTML = refreshDate(new Date());
+  // }, 1000);
+
+  // const refreshDate = (date) => {
+  //   return date.toLocaleString([], {
+  //     weekday: "long",
+  //     month: "2-digit",
+  //     day: "2-digit",
+  //     year: "2-digit",
+  //     hour: "2-digit",
+  //     minute: "2-digit",
+  //   });
+  // };
 
   const drawer = (
     <div>
@@ -216,6 +257,74 @@ function ResponsiveDrawer() {
   );
 
   // ------------------------------------------------------------------------------------------------------------------
+  // ---------------------------------------------------Inbox-------------------------------------------------------
+  // ------------------------------------------------------------------------------------------------------------------
+  const form = useRef();
+  const [mail, setMail] = useState({});
+  let name, value;
+  const handleInputs = (e) => {
+    console.log(e);
+    name = e.target.name;
+    value = e.target.value;
+
+    setMail({ ...mail, [name]: value });
+  };
+  const sendEmail = (e) => {
+    e.preventDefault();
+    console.log(mail);
+    console.log(form.current);
+    emailjs
+      .sendForm(
+        "service_bdy40vm",
+        "template_dwlucdq",
+        form.current,
+        "lCP5fKsL73HkyO8v6"
+      )
+      .then(
+        (res) => {
+          toast.success("Message Sent !", {
+            position: toast.POSITION.BOTTOM_RIGHT,
+            className: "toast-message",
+          });
+          console.log(res.text);
+        },
+        (err) => {
+          toast.warn("Message not sent !", {
+            position: toast.POSITION.BOTTOM_RIGHT,
+            className: "toast-message",
+          });
+          console.log(err.text);
+        }
+      );
+  };
+
+  // ------------------------------------------------------------------------------------------------------------------
+  // ---------------------------------------------------UserData-------------------------------------------------------
+  // ------------------------------------------------------------------------------------------------------------------
+
+  const [userData, setUserData] = useState([]);
+
+  const callProfilePage = async () => {
+    const res = await fetch("/users", {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    });
+    const data = await res.json();
+    setUserData(data);
+    console.log(userData);
+
+    if (!res.status === 200) {
+      const error = new Error(res.error);
+      throw error;
+      // console.log("hello");
+    }
+  };
+
+  // ------------------------------------------------------------------------------------------------------------------
   // ---------------------------------------------------Calendar-------------------------------------------------------
   // ------------------------------------------------------------------------------------------------------------------
   const locales = {
@@ -276,7 +385,7 @@ function ResponsiveDrawer() {
     });
   };
   let editorState = EditorState.createEmpty();
-  const [text, setText] = useState([]);
+  const [text, setText] = useState(getEditor());
   const [description, setDescription] = useState(editorState);
   const onEditorStateChange = (editorState) => {
     setDescription(editorState);
@@ -316,51 +425,60 @@ function ResponsiveDrawer() {
   // ---------------------------------------------------File Upload-------------------------------------------------------
   // ------------------------------------------------------------------------------------------------------------------
 
-  const [file, setFile] = useState([]);
+  const [file, setFile] = useState(getImages());
   const handleChange = (e) => {
     console.log(e.target.files);
     const selectedFiles = Array.from(e.target.files);
     const images = selectedFiles.map((e) => {
       return URL.createObjectURL(e);
     });
-    // setFile([...file, images]);
     setFile((prev) => prev.concat(images));
     console.log(images);
+    toast.success("Image Uploaded !", {
+      position: toast.POSITION.BOTTOM_RIGHT,
+      className: "toast-message",
+    });
   };
 
   // ------------------------------------------------------------------------------------------------------------------
   // ---------------------------------------------------Doc Upload-------------------------------------------------------
   // ------------------------------------------------------------------------------------------------------------------
 
-  const [numPages, setNumPages] = useState(null);
-  const [pageNumber, setPageNumber] = useState(1);
+  const [doc, setDoc] = useState(getDoc());
+  const [docItem, setDocItem] = useState([]);
+  const fileType = ["application/pdf"];
+  const docUpload = (e) => {
+    let selectedFiles = e.target.files[0];
+    if (selectedFiles) {
+      if (selectedFiles && fileType.includes(selectedFiles.type)) {
+        let reader = new FileReader();
+        reader.readAsDataURL(selectedFiles);
+        reader.onload = (e) => {
+          setDoc((prev) => prev.concat(e.target.result));
 
-  const onDocumentLoadSuccess = ({ numPages }) => {
-    setNumPages(numPages);
+          toast.success("Document Uploaded !", {
+            position: toast.POSITION.BOTTOM_RIGHT,
+            className: "toast-message",
+          });
+        };
+      } else {
+        setDoc(null);
+      }
+    } else {
+      console.log("select a file");
+    }
   };
-  const [doc, setDoc] = useState([]);
-  const [docItem, setDocItem] = useState(doc);
-  function docUpload(e) {
-    console.log(e.target.files);
-    const selectedFiles = Array.from(e.target.files);
-    const document = selectedFiles.map((e) => {
-      return URL.createObjectURL(e);
+  useEffect(() => {
+    setDocItem(doc);
+  }, [doc]);
+  const [open, setOpen] = useState([]);
+  const viewPdf = (item) => {
+    const selectedDoc = docItem.filter((e) => {
+      if (item === e) {
+        return item;
+      }
     });
-    setDoc((prev) => prev.concat(document));
-    // console.log(doc);
-  }
-
-  const filterDoc = (id) => {
-    // const updatedDoc = doc.filter((e) => {
-    //   if (e === id) {
-    //     return e;
-    //     // console.log(true);
-    //   }
-    // });
-    // console.log(updatedDoc);
-    setDocItem(() => doc.filter((e) => (e === id ? e : 0)));
-    // setDocItem((prev) => prev.concat(updatedDoc));
-    console.log(docItem);
+    setOpen(selectedDoc.toString());
   };
 
   // ------------------------------------------------------------------------------------------------------------------
@@ -377,8 +495,41 @@ function ResponsiveDrawer() {
   };
 
   // ------------------------------------------------------------------------------------------------------------------
+  // -------------------------------------------------Transaction------------------------------------------------------
+  // ------------------------------------------------------------------------------------------------------------------
+
+  const [transaction, setTrasaction] = useState({
+    id:new Date().getTime()
+  });
+  // const [transaction, setTrasaction] = useState(getTransactions());
+  const [details, setDetails] = useState(getTransactions());
+
+  const handleTransaction = (e) => {
+    name = e.target.name;
+    value = e.target.value;
+
+    setTrasaction({ ...transaction, [name]: value });
+    // console.log(transaction);
+  };
+
+  const addItems = () => {
+    setDetails([...details, transaction]);
+    // console.log(transaction);
+    // console.log(details);
+  };
+  useEffect(() => {
+    console.log(details);
+  }, [details]);
   // ------------------------------------------------------------------------------------------------------------------
   // ------------------------------------------------------------------------------------------------------------------
+  // ------------------------------------------------------------------------------------------------------------------
+
+  useEffect(() => {
+    localStorage.setItem("list1", JSON.stringify(text));
+    localStorage.setItem("list2", JSON.stringify(file));
+    localStorage.setItem("list4", JSON.stringify(doc));
+    localStorage.setItem("list5", JSON.stringify(details));
+  }, [text, file, details]);
   return (
     <div id="home">
       <ToastContainer />
@@ -395,49 +546,56 @@ function ResponsiveDrawer() {
         </div>
       </div>
       <div id="content" style={{ display: "none" }} className="animate-bottom">
-        <div className="" id="navbar">
-          <AppBar
-            className="p-2"
-            sx={{
-              background: "transparent",
-              boxShadow: "none",
-              width: { sm: `calc(100% - ${drawerWidth}px)` },
-              ml: { sm: `${drawerWidth}px` },
-            }}
-          >
-            <div
-              className="d-lg-flex align-items-center text-lg-block text-center p-4 mt-lg-0 mt-md-0 mt-5"
-              style={{
-                textShadow: "1px 1px 2px rgb(0 0 0 / 40%)",
+        {navbar ? (
+          <div className="" id="navbar" style={{ transition: "0.5s" }}>
+            <AppBar
+              className="p-2"
+              sx={{
+                zIndex: 1,
+                background: "transparent",
+                boxShadow: "none",
+                width: { sm: `calc(100% - ${drawerWidth}px)` },
+                ml: { sm: `${drawerWidth}px` },
               }}
             >
-              <div className=" mb-lg-0 mb-3" style={{ fontSize: "25px" }}>
-                Good Morning, abc!
-              </div>
               <div
-                className="px-lg-5 px-md-5 px-3 mb-lg-0 mb-2"
-                id="dateandtime"
-                style={{ marginLeft: "auto", fontSize: "17px" }}
-              ></div>
-              <div className="btn btn-dark">
-                <span className="fa fa-edit"></span>&nbsp;Customize
+                className="d-lg-flex align-items-center text-lg-block text-center p-4 mt-lg-0 mt-md-0 mt-5"
+                style={{
+                  textShadow: "1px 1px 2px rgb(0 0 0 / 40%)",
+                }}
+              >
+                <div className=" mb-lg-0 mb-3" style={{ fontSize: "25px" }}>
+                  Good Morning, {userData.fname}!
+                </div>
+                <div
+                  className="px-lg-5 px-md-5 px-3 mb-lg-0 mb-2"
+                  id="dateandtime"
+                  style={{ marginLeft: "auto", fontSize: "17px" }}
+                ></div>
+                <NavLink to="/profile">
+                  <div className="btn btn-dark">
+                    <span className="fa fa-user-circle mr-2"></span>
+                    &nbsp;Profile
+                  </div>
+                </NavLink>
               </div>
-            </div>
-            <IconButton
-              className="position-absolute p-4 fa fa-bars"
-              color="inherit"
-              aria-label="open drawer"
-              edge="start"
-              onClick={handleDrawerToggle}
-              sx={{
-                mr: 2,
-                display: { sm: "none" },
-                color: "black",
-              }}
-            ></IconButton>
-          </AppBar>
-        </div>
-
+              <IconButton
+                className="position-absolute p-4 fa fa-bars"
+                color="inherit"
+                aria-label="open drawer"
+                edge="start"
+                onClick={handleDrawerToggle}
+                sx={{
+                  mr: 2,
+                  display: { sm: "none" },
+                  color: "black",
+                }}
+              ></IconButton>
+            </AppBar>
+          </div>
+        ) : (
+          <div></div>
+        )}
         <Box sx={{ display: "flex" }}>
           <Box
             component="nav"
@@ -676,62 +834,73 @@ function ResponsiveDrawer() {
                                 </div>
                               </div>
                               <div id="suggested" className="tab-pane">
-                                <div
-                                  className="p-3 mt-2 justify-content-center align-items-center d-flex addItems"
-                                  style={{
-                                    minWidth: "172px",
-                                    transition: "0.4s",
-                                    height: "290px",
-                                    background: "#262626",
-                                    borderRadius: "15px",
-                                    cursor: "pointer",
-                                  }}
-                                  onClick={showEditor}
-                                >
-                                  <div>
-                                    <div
-                                      className="justify-content-center d-flex align-items-center position-relative"
-                                      style={{
-                                        height: "60px",
-                                        width: "60px",
-                                        background: "#5082ff",
-                                        borderRadius: "50%",
-                                        left: "25%",
-                                      }}
-                                    >
+                                <div className="d-flex">
+                                  {" "}
+                                  {text.map((e) => {
+                                    return (
                                       <div
-                                        className="fa fa-sticky-note fa-2x"
-                                        style={{ color: "black" }}
-                                      ></div>
-                                      <div
-                                        className="d-flex justify-content-center align-items-center position-absolute"
+                                        className="p-3 mt-2 mr-3 itemsCard position-relative"
+                                        key={e.id}
                                         style={{
-                                          height: "13px",
-                                          width: "13px",
-                                          top: "33px",
-                                          left: "33px",
-                                          boxShadow:
-                                            "0 1px 6px rgba(0,0,0,0.2)",
-                                          background: "#5082ff",
-                                          borderRadius: "100%",
+                                          transition: "0.5s",
+                                          minWidth: "172px",
+                                          height: "290px",
+                                          background: "#262626",
+                                          borderRadius: "15px",
                                         }}
                                       >
-                                        <span
+                                        <div
+                                          className="openEditor position-absolute py-3 px-3 shadow text-white"
                                           style={{
-                                            fontSize: "20px",
-                                            fontWeight: 900,
-                                            lineHeight: 0,
-                                            marginBottom: "5px",
+                                            left: "32%",
+                                            top: "43%",
+                                            border: "2px solid white",
+                                            transition: "0.5s",
+                                            borderRadius: "50px",
+                                            lineHeight: "0",
+                                            cursor: "pointer",
                                           }}
+                                          onClick={() => showEditor(e.id)}
                                         >
-                                          +
-                                        </span>
+                                          Visit
+                                        </div>
+                                        <div className="justify-content-center d-flex align-items-center">
+                                          <div
+                                            className="hideText"
+                                            style={{
+                                              wordBreak: "break-all",
+                                              fontWeight: "500",
+                                              color: "white",
+                                            }}
+                                          >
+                                            {e.title || "Untitled"}
+                                          </div>
+                                          <div
+                                            className="ml-auto text-white removeBtn"
+                                            style={{
+                                              fontSize: "30px",
+                                              lineHeight: "0",
+                                              marginBottom: "7px",
+                                              cursor: "pointer",
+                                            }}
+                                            onClick={() => removeItem(e.id)}
+                                          >
+                                            &times;
+                                          </div>
+                                        </div>
+                                        <div
+                                          style={{
+                                            wordBreak: "break-all",
+                                            color: "#ffffff99",
+                                            fontSize: "14px",
+                                          }}
+                                          className="mt-2 hideText"
+                                        >
+                                          {e.description}
+                                        </div>
                                       </div>
-                                    </div>
-                                    <div className="text-white mt-3">
-                                      Create new note
-                                    </div>
-                                  </div>
+                                    );
+                                  })}
                                 </div>
                               </div>
                             </div>
@@ -1005,7 +1174,135 @@ function ResponsiveDrawer() {
                           className="text-white"
                           style={{ fontWeight: "500" }}
                         >
-                          INBOX
+                          <div
+                            className="text-center text-primary"
+                            style={{ fontSize: "30px" }}
+                          >
+                            Send <span className="text-white">Email</span>
+                          </div>
+                          <hr
+                            className="mx-auto text-white"
+                            style={{ width: "50px", paddingTop: "2px" }}
+                          ></hr>
+                          <div className="row mt-5 mx-3">
+                            <div className="col-8 gx-0">
+                              <form
+                                ref={form}
+                                className=""
+                                onSubmit={sendEmail}
+                              >
+                                <div>
+                                  <div className="row mr-4">
+                                    <div className="col-6 mb-4">
+                                      <TextField
+                                        className="w-100"
+                                        id="filled-basic"
+                                        type="text"
+                                        name="name"
+                                        value={mail.name}
+                                        onChange={handleInputs}
+                                        label="Full Name"
+                                        variant="filled"
+                                        sx={{ color: "white" }}
+                                      />
+                                    </div>
+                                    <div className="col-6 mb-4">
+                                      <TextField
+                                        className="w-100"
+                                        id="filled-basic"
+                                        type="email"
+                                        name="user_email"
+                                        value={mail.user_email}
+                                        onChange={handleInputs}
+                                        label="Email"
+                                        variant="filled"
+                                        sx={{ color: "white" }}
+                                      />
+                                    </div>
+                                    <div className="col-12">
+                                      <textarea
+                                        rows={5}
+                                        className="w-100 p-2"
+                                        placeholder="Message..."
+                                        name="message"
+                                        value={mail.message}
+                                        onChange={handleInputs}
+                                        style={{
+                                          background: "#5082ff12",
+                                          border: "2px solid transparent",
+                                        }}
+                                      ></textarea>
+                                    </div>
+                                  </div>
+                                  <input
+                                    type="submit"
+                                    className="btn btn-primary"
+                                    value="Send"
+                                  />
+                                </div>
+                              </form>
+                            </div>
+                            <div
+                              className="col-4 px-4"
+                              style={{
+                                height: "100%",
+                                color: "black",
+                                fontWeight: "600",
+                                background: "#f8f9fe",
+                                borderRadius: "10px",
+                                boxShadow: "1px 1px 3px 1px black",
+                              }}
+                            >
+                              <div
+                                className="text-center py-2"
+                                style={{ fontSize: "18px" }}
+                              >
+                                Message Template
+                                <div
+                                  style={{ fontSize: "13px", color: "#525f7f" }}
+                                >
+                                  {mail.user_email}
+                                </div>
+                              </div>
+                              <div className="mt-3">
+                                <div className="" style={{ fontSize: "15px" }}>
+                                  <div>
+                                    Hello!{" "}
+                                    <span style={{ color: "#525f7f" }}>
+                                      {mail.name}
+                                    </span>
+                                  </div>
+                                </div>
+                                <div
+                                  className="mt-2"
+                                  style={{ fontSize: "15px" }}
+                                >
+                                  This is a test mail...
+                                </div>
+                                <div
+                                  className="mt-2"
+                                  style={{ fontSize: "15px" }}
+                                >
+                                  Message:{" "}
+                                  <span style={{ color: "#525f7f" }}>
+                                    {mail.message}
+                                  </span>
+                                </div>
+                              </div>
+                              <div
+                                className="mt-3"
+                                style={{ fontSize: "12px" }}
+                              >
+                                Best wishes,
+                              </div>
+                              <div
+                                className="mb-3"
+                                style={{ fontSize: "12px" }}
+                              >
+                                HandBook team
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -1020,81 +1317,57 @@ function ResponsiveDrawer() {
                         }}
                       >
                         <div className="text-white">RECENTLY CAPTURED</div>
-                        <div className="d-flex align-items-center">
-                          <ul
-                            className="nav nav-tabs list-unstyled"
-                            style={{
-                              color: "black",
-                              borderBottom: "none",
-                              fontSize: "17px",
-                            }}
-                          >
-                            <li className="active py-2">
-                              <div
-                                className="active mr-3 tab"
-                                type="button"
-                                data-toggle="tab"
-                                href="#images1"
-                              >
-                                Images
-                              </div>
-                            </li>
-                            <li className="py-2">
-                              <div
-                                className="mx-3 tab"
-                                type="button"
-                                data-toggle="tab"
-                                href="#documents1"
-                              >
-                                Documents
-                              </div>
-                            </li>
-                            <li className="py-2">
-                              <div
-                                className="mx-3 tab"
-                                type="button"
-                                data-toggle="tab"
-                                href="#audio1"
-                              >
-                                Audio
-                              </div>
-                            </li>
-                            <li className="py-2">
-                              <div
-                                className="mx-3 tab"
-                                type="button"
-                                data-toggle="tab"
-                                href="#emails1"
-                              >
-                                Emails
-                              </div>
-                            </li>
-                          </ul>
-                          <div className="ml-auto position-relative">
+
+                        <ul
+                          className="nav nav-tabs list-unstyled"
+                          style={{
+                            color: "black",
+                            borderBottom: "none",
+                            fontSize: "17px",
+                          }}
+                        >
+                          <li className="active py-2">
                             <div
-                              className="btn btn-dark position-absolute bg-transparent px-4 text-primary imageBtn"
-                              style={{
-                                fontWeight: "500",
-                                width: "144px",
-                                right: "4px",
-                                bottom: "-4px",
-                                border: "1px solid #737373",
-                              }}
+                              className="active mr-3 tab"
+                              type="button"
+                              data-toggle="tab"
+                              href="#images1"
                             >
-                              Take a photo
+                              Images
                             </div>
-                            <input
-                              type="file"
-                              style={{
-                                width: "147px",
-                                opacity: "0",
-                                cursor: "pointer",
-                              }}
-                              onChange={handleChange}
-                              multiple
-                            />
-                          </div>
-                        </div>
+                          </li>
+                          <li className="py-2">
+                            <div
+                              className="mx-3 tab"
+                              type="button"
+                              data-toggle="tab"
+                              href="#documents1"
+                            >
+                              Documents
+                            </div>
+                          </li>
+                          <li className="py-2">
+                            <div
+                              className="mx-3 tab"
+                              type="button"
+                              data-toggle="tab"
+                              href="#audio1"
+                            >
+                              Audio
+                            </div>
+                          </li>
+                          <li className="py-2">
+                            <div
+                              className="mx-3 tab"
+                              type="button"
+                              data-toggle="tab"
+                              href="#emails1"
+                            >
+                              Emails
+                            </div>
+                          </li>
+                        </ul>
+
                         <div className="tab-content mt-4">
                           <div
                             id="images1"
@@ -1107,7 +1380,7 @@ function ResponsiveDrawer() {
                             >
                               <div className="w-100">
                                 {file.length === 0 ? (
-                                  <div className="text-center">
+                                  <div className="text-center position-relative">
                                     <img
                                       src={Image}
                                       className="img-fluid"
@@ -1132,9 +1405,44 @@ function ResponsiveDrawer() {
                                     >
                                       Take a photo
                                     </div>
+                                    <input
+                                      type="file"
+                                      style={{
+                                        width: "139px",
+                                        opacity: "0",
+                                        position: "absolute",
+                                        cursor: "pointer",
+                                        left: "43%",
+                                        top: "84%",
+                                      }}
+                                      onChange={handleChange}
+                                      multiple
+                                    />
                                   </div>
                                 ) : (
                                   <div style={{ height: "74vh" }}>
+                                    <div className="position-relative text-center mb-4">
+                                      <div
+                                        className="btn btn-dark position-absolute bg-transparent px-4 text-primary imageBtn"
+                                        style={{
+                                          fontWeight: "500",
+                                          width: "144px",
+                                          border: "1px solid #737373",
+                                        }}
+                                      >
+                                        Take a photo
+                                      </div>
+                                      <input
+                                        type="file"
+                                        style={{
+                                          width: "147px",
+                                          opacity: "0",
+                                          cursor: "pointer",
+                                        }}
+                                        onChange={handleChange}
+                                        multiple
+                                      />
+                                    </div>
                                     <div
                                       className="d-flex flex-wrap"
                                       style={{
@@ -1226,8 +1534,28 @@ function ResponsiveDrawer() {
                               style={{ height: "100%" }}
                             >
                               {" "}
-                              {doc.length === 0 ? (
-                                <div className="text-center">
+                              <div>
+                                <div className="modal fade" id="mymodal3">
+                                  <div className="modal-dialog modal-xl">
+                                    <div className="modal-content">
+                                      <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.1.81/build/pdf.worker.min.js">
+                                        {docItem && (
+                                          <div>
+                                            <Viewer
+                                              fileUrl={open}
+                                              plugins={[newPlugin]}
+                                              theme="dark"
+                                              onZoom={true}
+                                            />
+                                          </div>
+                                        )}
+                                      </Worker>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              {docItem.length === 0 ? (
+                                <div className="text-center position-relative">
                                   <img
                                     src={Doc}
                                     className="img-fluid"
@@ -1244,7 +1572,7 @@ function ResponsiveDrawer() {
                                     safe keeping.
                                   </div>
                                   <div
-                                    className="btn btn-dark bg-transparent px-4 text-primary imageBtn mt-4"
+                                    className="btn btn-dark bg-transparent px-4 mt-4 text-primary imageBtn"
                                     style={{
                                       fontWeight: "500",
                                       border: "1px solid #737373",
@@ -1252,93 +1580,119 @@ function ResponsiveDrawer() {
                                   >
                                     Save documents
                                   </div>
-                                  <input type="file" onChange={docUpload} />
+                                  <input
+                                    type="file"
+                                    style={{
+                                      width: "139px",
+                                      opacity: "0",
+                                      position: "absolute",
+                                      cursor: "pointer",
+                                      left: "43%",
+                                      top: "84%",
+                                    }}
+                                    onChange={docUpload}
+                                    multiple
+                                  />
                                 </div>
                               ) : (
-                                <div>
-                                  {docItem.map((e) => {
-                                    return (
-                                      <div key={e}>
+                                <div
+                                  className="w-100"
+                                  style={{ height: "74vh" }}
+                                >
+                                  <div className="position-relative text-center">
+                                    <div
+                                      className="btn btn-dark position-absolute bg-transparent px-4 text-primary imageBtn"
+                                      style={{
+                                        fontWeight: "500",
+                                        border: "1px solid #737373",
+                                      }}
+                                    >
+                                      Save documents
+                                    </div>
+                                    <input
+                                      type="file"
+                                      style={{
+                                        width: "167px",
+                                        paddingBottom: "7px",
+                                        opacity: "0",
+                                        cursor: "pointer",
+                                      }}
+                                      onChange={docUpload}
+                                      multiple
+                                    />
+                                  </div>
+                                  <div
+                                    className="d-flex text-white p-2 mt-3 flex-wrap overflow-auto"
+                                    style={{
+                                      height: "68vh",
+                                      overflow: "scroll",
+                                      alignContent: "flex-start",
+                                    }}
+                                  >
+                                    {docItem.map((document) => {
+                                      return (
                                         <div
-                                          className="modal fade"
-                                          id="mymodal3"
-                                          style={{ top: "25%" }}
+                                          className="p-3 mt-3 mr-3 itemsCard position-relative"
+                                          key={document}
+                                          style={{
+                                            transition: "0.5s",
+                                            minWidth: "172px",
+                                            height: "290px",
+                                            background: "#262626",
+                                            borderRadius: "15px",
+                                          }}
                                         >
-                                          <div className="modal-dialog">
+                                          <div
+                                            className="openEditor position-absolute py-3 px-3 shadow text-white"
+                                            style={{
+                                              left: "32%",
+                                              top: "43%",
+                                              border: "2px solid white",
+                                              transition: "0.5s",
+                                              borderRadius: "50px",
+                                              lineHeight: "0",
+                                              cursor: "pointer",
+                                            }}
+                                            onClick={() => viewPdf(document)}
+                                            data-target="#mymodal3"
+                                            data-toggle="modal"
+                                          >
+                                            Visit
+                                          </div>
+                                          <div className="justify-content-center d-flex align-items-center">
                                             <div
-                                              className="modal-content p-5"
-                                              style={{ background: "#1a1a1a" }}
+                                              className="hideText"
+                                              style={{
+                                                wordBreak: "break-all",
+                                                fontWeight: "500",
+                                                color: "white",
+                                              }}
                                             >
-                                              <div
-                                                className="position-absolute text-white"
-                                                style={{
-                                                  fontSize: "40px",
-                                                  zIndex: 1,
-                                                }}
-                                              >
-                                                Document
-                                              </div>
-                                              <Document
-                                                file={e}
-                                                onLoadSuccess={
-                                                  onDocumentLoadSuccess
-                                                }
-                                              >
-                                                <Page pageNumber={pageNumber} />
-                                              </Document>
-                                              <div className="d-flex position-absolute">
-                                                <div
-                                                  className="btn btn-primary"
-                                                  onClick={() =>
-                                                    setPageNumber((e) =>
-                                                      e <= 1 ? e : e - 1
-                                                    )
-                                                  }
-                                                >
-                                                  back
-                                                </div>
-                                                <p className="text-white">
-                                                  Page {pageNumber} of{" "}
-                                                  {numPages}
-                                                </p>
-                                                <div
-                                                  className="btn btn-primary"
-                                                  onClick={() =>
-                                                    setPageNumber((e) =>
-                                                      e === numPages ? e : e + 1
-                                                    )
-                                                  }
-                                                >
-                                                  next
-                                                </div>
-                                              </div>
+                                              hello
+                                            </div>
+                                            <div
+                                              className="ml-auto text-white removeBtn"
+                                              style={{
+                                                fontSize: "30px",
+                                                lineHeight: "0",
+                                                marginBottom: "7px",
+                                                cursor: "pointer",
+                                              }}
+                                              onClick={() =>
+                                                setDoc(
+                                                  docItem.filter(
+                                                    (e) => e !== document
+                                                  )
+                                                )
+                                              }
+                                            >
+                                              &times;
                                             </div>
                                           </div>
                                         </div>
-                                      </div>
-                                    );
-                                  })}
-                                  <input type="file" onChange={docUpload} />
-                                  <div
-                                    className="btn btn-primary"
-                                    data-target="#mymodal3"
-                                    data-toggle="modal"
-                                  >
-                                    open modal
+                                      );
+                                    })}
                                   </div>
-                                  {doc.map((e) => {
-                                    return (
-                                      <div key={e}>
-                                        <div
-                                          data-target="#mymodal3"
-                                          data-toggle="modal"
-                                          onClick={() => filterDoc(e)}
-                                        >
-                                          {e}
-                                        </div>
-                                      </div>
-                                    );
-                                  })}
                                 </div>
                               )}
                             </div>
@@ -1634,268 +1988,489 @@ function ResponsiveDrawer() {
                           background: "#1a1a1a",
                         }}
                       >
-                        <div className="row">
-                          <div className="col-lg-4 col-md-4 col-sm-6 col-12 mb-lg-0 mb-md-0 mb-4">
+                        <div
+                          className="btn btn-primary"
+                          data-target="#mymodal4"
+                          data-toggle="modal"
+                        >
+                          add transactions
+                        </div>
+<div className="bg-white text-dark">
+                        <div className="nav nav-tabs border-0 text-dark">
+                          <li className="nav-item py-2">
                             <div
-                              className="py-4 rounded border-0 text-white"
-                              style={{
-                                background: "#262626",
-                                boxShadow: "0 1px 6px rgba(0,0,0,0.2)",
-                                minHeight: "196px",
-                              }}
+                              className="active p-3 tab align-items-center d-flex"
+                              type="button"
+                              data-toggle="tab"
+                              href="#table"
                             >
-                              <div className="container">
-                                <div className="row">
-                                  <div className="col-lg-6 col-md-12 col-12">
-                                    <h5>Successful Transactions</h5>
-                                    <h4 className="font-weight-bold">7956</h4>
-                                    <div className="color">
-                                      <div className="fa fa-arrow-up fa-rotate-45 fa-lg font-weight-lighter pt-1"></div>
-                                      <h6 className="px-4 pt-1">+0.6%</h6>
-                                    </div>
-                                  </div>
-                                  <div className="col-lg-6 col-md-12 col-12 d-flex justify-content-end">
-                                    <div style={{ width: "120px" }}>
-                                      <CircularProgressbar
-                                        value={72}
-                                        text={`${72}%`}
-                                        styles={buildStyles({
-                                          pathColor: "#4343cb",
-                                          textColor: "#4343cb",
-                                          trailColor: "grey",
-                                        })}
-                                      />
+                              Home
+                            </div>
+                          </li>
+                          <li className="py-2 nav-item">
+                            <div
+                              className="p-3 tab align-items-center d-flex text-dark"
+                              type="button"
+                              data-toggle="tab"
+                              href="#graph"
+                            >
+                              Inbox
+                            </div>
+                          </li>
+                        </div>
+                        <div className="tab-content">
+                          <div id="table" className="active tab-pane">
+                            <table>
+                              <tr>
+                                <th>S.No</th>
+                                <th>User Name</th>
+                                <th>Transaction ID</th>
+                                <th>Transaction Status</th>
+                                <th>Transaction Date</th>
+                                <th>Transaction Amount</th>
+                              </tr>
+                              {details.map((e)=>{
+                                console.log(details);
+                             
+                                return(
+                                  <tr>
+                                    <td>{count++}</td>
+                                    <td>{e.name}</td>
+                                    <td>{e.id}</td>
+                                    <td>{e.status}</td>
+                                    <td>{e.date}</td>
+                                    <td>{e.amount}</td>
+                                  </tr>
+                              )})}
+                            </table>
+                          </div>
+                          <div id="graph" className="tab-pane fade">
+                            <div className="row">
+                              <div className="col-lg-4 col-md-4 col-sm-6 col-12 mb-lg-0 mb-md-0 mb-4">
+                                <div
+                                  className="py-4 rounded border-0 text-white"
+                                  style={{
+                                    background: "#262626",
+                                    boxShadow: "0 1px 6px rgba(0,0,0,0.2)",
+                                    minHeight: "196px",
+                                  }}
+                                >
+                                  <div className="container">
+                                    <div className="row">
+                                      <div className="col-lg-6 col-md-12 col-12">
+                                        <h5>Successful Transactions</h5>
+                                        <h4 className="font-weight-bold">
+                                          7956
+                                        </h4>
+                                        <div className="color">
+                                          <div className="fa fa-arrow-up fa-rotate-45 fa-lg font-weight-lighter pt-1"></div>
+                                          <h6 className="px-4 pt-1">+0.6%</h6>
+                                        </div>
+                                      </div>
+                                      <div className="col-lg-6 col-md-12 col-12 d-flex justify-content-end">
+                                        <div style={{ width: "120px" }}>
+                                          <CircularProgressbar
+                                            value={72}
+                                            text={`${72}%`}
+                                            styles={buildStyles({
+                                              pathColor: "#4343cb",
+                                              textColor: "#4343cb",
+                                              trailColor: "grey",
+                                            })}
+                                          />
+                                        </div>
+                                      </div>
                                     </div>
                                   </div>
                                 </div>
                               </div>
-                            </div>
-                          </div>
-                          <div className="col-lg-4 col-md-4 col-sm-6 col-12 mb-lg-0 mb-md-0 mb-4">
-                            <div
-                              className="py-4 rounded border-0 text-white"
-                              style={{
-                                background: "#262626",
-                                boxShadow: "0 1px 6px rgba(0,0,0,0.2)",
-                                minHeight: "196px",
-                              }}
-                            >
-                              <div className="container">
-                                <div className="row ">
-                                  <div className="col-lg-6 col-md-12 col-12 ">
-                                    <h5>Pending Transactions</h5>
-                                    <h4 className="font-weight-bold">4658</h4>
-                                    <div className="">
-                                      <div className="fa fa-arrow-up fa-rotate-45 fa-lg font-weight-lighter text-white pt-1"></div>
-                                      <h6 className="px-4 pt-1">+0.6%</h6>
-                                    </div>
-                                  </div>
-                                  <div className="col-lg-6 col-md-12 col-12 d-flex justify-content-end">
-                                    <div style={{ width: "120px" }}>
-                                      <CircularProgressbar
-                                        value={8}
-                                        text={`${8}%`}
-                                        styles={buildStyles({
-                                          pathColor: "#ff9800",
-                                          textColor: "#ff9800",
-                                          trailColor: "grey",
-                                        })}
-                                      />
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="col-lg-4 col-md-4 col-sm-6 col-12 mb-lg-0 mb-md-0 mb-4">
-                            <div
-                              className="py-4 rounded border-0 text-white"
-                              style={{
-                                background: "#262626",
-                                boxShadow: "0 1px 6px rgba(0,0,0,0.2)",
-                                minHeight: "196px",
-                              }}
-                            >
-                              <div className="container">
-                                <div className="row">
-                                  <div className="col-lg-6 col-md-12 col-12">
-                                    <h5>Failed Transactions</h5>
-                                    <h4 className="font-weight-bold">1501</h4>
-                                    <div className="color1">
-                                      <div className="fa fa-arrow-up fa-rotate-45 fa-lg  font-weight-lighter pt-1"></div>
-                                      <h6 className="px-4 pt-1">+0.6%</h6>
-                                    </div>
-                                  </div>
-                                  <div className="col-lg-6 col-md-12 col-12 d-flex justify-content-end">
-                                    <div style={{ width: "120px" }}>
-                                      <CircularProgressbar
-                                        value={20}
-                                        text={`${20}%`}
-                                        styles={buildStyles({
-                                          pathColor: "#c02d2d",
-                                          textColor: "#c02d2d",
-                                          trailColor: "grey",
-                                        })}
-                                      />
+                              <div className="col-lg-4 col-md-4 col-sm-6 col-12 mb-lg-0 mb-md-0 mb-4">
+                                <div
+                                  className="py-4 rounded border-0 text-white"
+                                  style={{
+                                    background: "#262626",
+                                    boxShadow: "0 1px 6px rgba(0,0,0,0.2)",
+                                    minHeight: "196px",
+                                  }}
+                                >
+                                  <div className="container">
+                                    <div className="row ">
+                                      <div className="col-lg-6 col-md-12 col-12 ">
+                                        <h5>Pending Transactions</h5>
+                                        <h4 className="font-weight-bold">
+                                          4658
+                                        </h4>
+                                        <div className="">
+                                          <div className="fa fa-arrow-up fa-rotate-45 fa-lg font-weight-lighter text-white pt-1"></div>
+                                          <h6 className="px-4 pt-1">+0.6%</h6>
+                                        </div>
+                                      </div>
+                                      <div className="col-lg-6 col-md-12 col-12 d-flex justify-content-end">
+                                        <div style={{ width: "120px" }}>
+                                          <CircularProgressbar
+                                            value={8}
+                                            text={`${8}%`}
+                                            styles={buildStyles({
+                                              pathColor: "#ff9800",
+                                              textColor: "#ff9800",
+                                              trailColor: "grey",
+                                            })}
+                                          />
+                                        </div>
+                                      </div>
                                     </div>
                                   </div>
                                 </div>
                               </div>
-                            </div>
-                          </div>
+                              <div className="col-lg-4 col-md-4 col-sm-6 col-12 mb-lg-0 mb-md-0 mb-4">
+                                <div
+                                  className="py-4 rounded border-0 text-white"
+                                  style={{
+                                    background: "#262626",
+                                    boxShadow: "0 1px 6px rgba(0,0,0,0.2)",
+                                    minHeight: "196px",
+                                  }}
+                                >
+                                  <div className="container">
+                                    <div className="row">
+                                      <div className="col-lg-6 col-md-12 col-12">
+                                        <h5>Failed Transactions</h5>
+                                        <h4 className="font-weight-bold">
+                                          1501
+                                        </h4>
+                                        <div className="color1">
+                                          <div className="fa fa-arrow-up fa-rotate-45 fa-lg  font-weight-lighter pt-1"></div>
+                                          <h6 className="px-4 pt-1">+0.6%</h6>
+                                        </div>
+                                      </div>
+                                      <div className="col-lg-6 col-md-12 col-12 d-flex justify-content-end">
+                                        <div style={{ width: "120px" }}>
+                                          <CircularProgressbar
+                                            value={20}
+                                            text={`${20}%`}
+                                            styles={buildStyles({
+                                              pathColor: "#c02d2d",
+                                              textColor: "#c02d2d",
+                                              trailColor: "grey",
+                                            })}
+                                          />
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
 
-                          <div className="col-lg-8 col-12 mt-lg-4 mt-md-4 mb-lg-0 mb-4">
-                            <div
-                              className="rounded border-0 text-white"
-                              style={{
-                                background: "#262626",
-                                boxShadow: "0 1px 6px rgba(0,0,0,0.2)",
-                                height: "100%",
-                              }}
-                            >
-                              <nav className="navbar rounded navbar-expand-lg navbar-light">
-                                <div className="container-fluid">
-                                  <a className="navbar-brand text-white">
+                              <div className="col-lg-8 col-12 mt-lg-4 mt-md-4 mb-lg-0 mb-4">
+                                <div
+                                  className="rounded border-0 text-white"
+                                  style={{
+                                    background: "#262626",
+                                    boxShadow: "0 1px 6px rgba(0,0,0,0.2)",
+                                    height: "100%",
+                                  }}
+                                >
+                                  <nav className="navbar rounded navbar-expand-lg navbar-light">
+                                    <div className="container-fluid">
+                                      <a className="navbar-brand text-white">
+                                        Transactions
+                                      </a>
+
+                                      <ul className="navbar-nav">
+                                        <li className="nav-item">
+                                          <a
+                                            className="nav-link active text-white"
+                                            aria-current="page"
+                                            href="#"
+                                          >
+                                            This Year
+                                          </a>
+                                        </li>
+                                        <li className="nav-item">
+                                          <a
+                                            className="nav-link text-white"
+                                            href="#"
+                                          >
+                                            This Week
+                                          </a>
+                                        </li>
+                                        <li className="nav-item">
+                                          <a
+                                            className="nav-link text-white"
+                                            href="#"
+                                          >
+                                            Today
+                                          </a>
+                                        </li>
+                                      </ul>
+                                    </div>
+                                  </nav>
+                                  <div className="container">
+                                    <Line
+                                      className="chart w-100"
+                                      style={{ height: "100%" }}
+                                      data={{
+                                        labels: [
+                                          "jan",
+                                          "feb",
+                                          "mar",
+                                          "apr",
+                                          "may",
+                                          "jun",
+                                          "jul",
+                                          "aug",
+                                          "sept",
+                                          "oct",
+                                          "nov",
+                                          "dec",
+                                        ],
+                                        datasets: [
+                                          {
+                                            label: "Applications 2021",
+                                            data: [
+                                              1.5, 3, 3.2, 2.3, 4, 4.5, 3, 3.5,
+                                              5, 5.5, 4, 6,
+                                            ],
+                                            borderColor: [
+                                              "rgba(194, 44, 44, 0.87)",
+                                            ],
+                                            backgroundColor: [
+                                              "rgba(197, 60, 60, 0.596)",
+                                            ],
+                                            // pointBackgroundColor: [
+                                            //   "rgba(194, 44, 44, 0.87)",
+                                            //   "rgba(194, 44, 44, 0.87)",
+                                            //   "rgba(194, 44, 44, 0.87)",
+                                            //   "rgba(194, 44, 44, 0.87)",
+                                            //   "white",
+                                            // ],
+
+                                            fontColor: ["White"],
+                                            fill: {
+                                              target: "origin",
+                                              above: "rgba(197, 60, 60, 0.596)",
+                                            },
+                                          },
+                                          {
+                                            label: "Applications 2022",
+
+                                            data: [
+                                              3, 2.2, 2.7, 3.4, 2.5, 3.5, 4,
+                                              3.5, 5, 4.5, 4, 5,
+                                            ],
+                                            borderColor: [
+                                              "rgba(161, 223, 17, 0.568)",
+                                            ],
+                                            backgroundColor: [
+                                              "rgba(161, 223, 17, 0.568)",
+                                            ],
+                                            pointBackgroundColor: [
+                                              "rgba(161, 223, 17, 0.568)",
+                                              "rgba(161, 223, 17, 0.568)",
+                                              "rgba(161, 223, 17, 0.568)",
+                                              "rgba(161, 223, 17, 0.568)",
+                                              "white",
+                                            ],
+                                          },
+                                        ],
+                                        fontColor: "white",
+                                      }}
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div className="col-lg-4 col-12 mt-lg-4">
+                                <div
+                                  className="justify-content-center d-flex align-items-center border-0 text-white py-4"
+                                  style={{
+                                    background: "#262626",
+                                    boxShadow: "0 1px 6px rgba(0,0,0,0.2)",
+                                  }}
+                                >
+                                  <h5 className="mx-4 mt-5 position-absolute">
                                     Transactions
-                                  </a>
+                                  </h5>
+                                  <div className="container">
+                                    <h5 className="font-weight-bold">
+                                      All Transactions
+                                    </h5>
+                                    <Doughnut
+                                      className="doughnut justify-content-center d-flex pb-2 gx-0 my-auto"
+                                      data={{
+                                        datasets: [
+                                          {
+                                            label: "My First Dataset",
+                                            data: [72, 8, 20],
 
-                                  <ul className="navbar-nav">
-                                    <li className="nav-item">
-                                      <a
-                                        className="nav-link active text-white"
-                                        aria-current="page"
-                                        href="#"
-                                      >
-                                        This Year
-                                      </a>
-                                    </li>
-                                    <li className="nav-item">
-                                      <a
-                                        className="nav-link text-white"
-                                        href="#"
-                                      >
-                                        This Week
-                                      </a>
-                                    </li>
-                                    <li className="nav-item">
-                                      <a
-                                        className="nav-link text-white"
-                                        href="#"
-                                      >
-                                        Today
-                                      </a>
-                                    </li>
-                                  </ul>
+                                            backgroundColor: [
+                                              "purple",
+                                              "#dc3545",
+                                              "rgba(13, 124, 228, 0.808)",
+                                            ],
+                                            hoverOffset: 4,
+                                          },
+                                        ],
+                                      }}
+                                    />
+                                  </div>
                                 </div>
-                              </nav>
-                              <div className="container">
-                                <Line
-                                  className="chart w-100"
-                                  style={{ height: "100%" }}
-                                  data={{
-                                    labels: [
-                                      "jan",
-                                      "feb",
-                                      "mar",
-                                      "apr",
-                                      "may",
-                                      "jun",
-                                      "jul",
-                                      "aug",
-                                      "sept",
-                                      "oct",
-                                      "nov",
-                                      "dec",
-                                    ],
-                                    datasets: [
-                                      {
-                                        label: "Applications 2019",
-                                        data: [
-                                          1.5, 3, 3.2, 2.3, 4, 4.5, 3, 3.5, 5,
-                                          5.5, 4, 6,
-                                        ],
-                                        borderColor: [
-                                          "rgba(194, 44, 44, 0.87)",
-                                        ],
-                                        backgroundColor: [
-                                          "rgba(197, 60, 60, 0.596)",
-                                        ],
-                                        // pointBackgroundColor: [
-                                        //   "rgba(194, 44, 44, 0.87)",
-                                        //   "rgba(194, 44, 44, 0.87)",
-                                        //   "rgba(194, 44, 44, 0.87)",
-                                        //   "rgba(194, 44, 44, 0.87)",
-                                        //   "white",
-                                        // ],
-
-                                        fontColor: ["White"],
-                                        fill: {
-                                          target: "origin",
-                                          above: "rgba(197, 60, 60, 0.596)",
-                                        },
-                                      },
-                                      {
-                                        label: "Applications 2020",
-
-                                        data: [
-                                          3, 2.2, 2.7, 3.4, 2.5, 3.5, 4, 3.5, 5,
-                                          4.5, 4, 5,
-                                        ],
-                                        borderColor: [
-                                          "rgba(161, 223, 17, 0.568)",
-                                        ],
-                                        backgroundColor: [
-                                          "rgba(161, 223, 17, 0.568)",
-                                        ],
-                                        pointBackgroundColor: [
-                                          "rgba(161, 223, 17, 0.568)",
-                                          "rgba(161, 223, 17, 0.568)",
-                                          "rgba(161, 223, 17, 0.568)",
-                                          "rgba(161, 223, 17, 0.568)",
-                                          "white",
-                                        ],
-                                      },
-                                    ],
-                                    fontColor: "white",
-                                  }}
-                                />
                               </div>
                             </div>
                           </div>
+                        </div>
+                        </div>
+                      </div>
 
-                          <div className="col-lg-4 col-12 mt-lg-4">
-                            <div
-                              className="justify-content-center d-flex align-items-center border-0 text-white py-4"
-                              style={{
-                                background: "#262626",
-                                boxShadow: "0 1px 6px rgba(0,0,0,0.2)",
-                              }}
-                            >
-                              <h5 className="mx-4 mt-5 position-absolute">
-                                Transactions
-                              </h5>
-                              <div className="container">
-                                <h5 className="font-weight-bold">
-                                  All Transactions
-                                </h5>
-                                <Doughnut
-                                  className="doughnut justify-content-center d-flex pb-2 gx-0 my-auto"
-                                  data={{
-                                    datasets: [
-                                      {
-                                        label: "My First Dataset",
-                                        data: [72, 8, 20],
-
-                                        backgroundColor: [
-                                          "purple",
-                                          "#dc3545",
-                                          "rgba(13, 124, 228, 0.808)",
-                                        ],
-                                        hoverOffset: 4,
-                                      },
-                                    ],
+                      <div
+                        className="modal fade"
+                        id="mymodal4"
+                        style={{ top: "25%" }}
+                      >
+                        <div className="modal-dialog">
+                          <div
+                            className="modal-content"
+                            style={{ background: "#1a1a1a" }}
+                          >
+                            <div className="px-4 py-3">
+                              <div className="d-flex pb-4">
+                                <div
+                                  className=""
+                                  style={{
+                                    color: "#fbfbfb",
+                                    fontWeight: "500",
+                                    fontSize: "20px",
                                   }}
+                                >
+                                  Create New Event
+                                </div>
+                                <div
+                                  className="ml-auto"
+                                  style={{
+                                    fontSize: "40px",
+                                    lineHeight: "0",
+                                    marginTop: "11px",
+                                    cursor: "pointer",
+                                    color: "#fbfbfb",
+                                  }}
+                                  data-dismiss="modal"
+                                >
+                                  &times;
+                                </div>
+                              </div>
+                              <div>
+                                <Box
+                                  component="form"
+                                  sx={{
+                                    "& > :not(style)": { width: "100%" },
+                                  }}
+                                >
+                                  <div className="pb-4">
+                                    <TextField
+                                      type="text"
+                                      label="Name"
+                                      name="name"
+                                      onChange={handleTransaction}
+                                      value={transaction.name}
+                                      variant="filled"
+                                      sx={{
+                                        width: "100%",
+                                        color: "white",
+                                        input: { color: "white" },
+                                      }}
+                                      InputLabelProps={{
+                                        style: {
+                                          color: "#ffffff47",
+                                          fontWeight: "400",
+                                        },
+                                      }}
+                                      color="primary"
+                                    />
+                                    <TextField
+                                      type="text"
+                                      label="Transation Amount"
+                                      name="amount"
+                                      onChange={handleTransaction}
+                                      value={transaction.amount}
+                                      variant="filled"
+                                      sx={{
+                                        width: "100%",
+                                        color: "white",
+                                        input: { color: "white" },
+                                      }}
+                                      InputLabelProps={{
+                                        style: {
+                                          color: "#ffffff47",
+                                          fontWeight: "400",
+                                        },
+                                      }}
+                                      color="primary"
+                                    />
+                                  </div>
+                                </Box>
+                                <input
+                                  type="date"
+                                  name="date"
+                                  className="form-control"
+                                  onChange={handleTransaction}
+                                  value={transaction.date}
                                 />
+                                <div className="text-white d-flex mt-4">
+                                  <div className="w-50 p-2 d-flex justify-content-center align-items-center">
+                                    <input
+                                      className="form-check mr-2"
+                                      name="status"
+                                      type="radio"
+                                      value="Successful"
+                                      onChange={handleTransaction}
+                                      style={{ width: "20px" }}
+                                    />
+                                    <label>Successful</label>
+                                  </div>
+                                  <div className="w-50 p-2 d-flex justify-content-center align-items-center">
+                                    <input
+                                      className="form-check mr-2"
+                                      name="status"
+                                      type="radio"
+                                      value="Failed"
+                                      onChange={handleTransaction}
+                                      style={{ width: "20px" }}
+                                    />
+                                    <label>Failed</label>
+                                  </div>
+                                  <div className="w-50 p-2 d-flex justify-content-center align-items-center">
+                                    <input
+                                      className="form-check mr-2"
+                                      name="status"
+                                      type="radio"
+                                      value="Pending"
+                                      onChange={handleTransaction}
+                                      style={{ width: "20px" }}
+                                    />
+                                    <label>Pending</label>
+                                  </div>
+                                </div>
+                                <div className="mt-3">
+                                  <button
+                                    className="btn btn-primary border-0"
+                                    onClick={addItems}
+                                    data-dismiss="modal"
+                                    style={{
+                                      background: "rgb(53 102 223)",
+                                    }}
+                                  >
+                                    Add Event
+                                  </button>
+                                  <button
+                                    className="btn btn-primary border-0 ml-3"
+                                    data-dismiss="modal"
+                                    style={{
+                                      background: "rgb(53 102 223)",
+                                    }}
+                                  >
+                                    Close
+                                  </button>
+                                </div>
                               </div>
                             </div>
                           </div>

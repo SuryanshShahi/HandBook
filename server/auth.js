@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const authenticate =require("./middleware/authenticate")
 
 require("./db/conn");
 const User = require("./model/userSchema");
@@ -8,18 +10,24 @@ const User = require("./model/userSchema");
 // var nodemailer = require("nodemailer");
 
 router.post("/signup1", async (req, res) => {
-  const { email, password } = req.body;
-  if (!email || !password) {
+  const { fname, lname, email, mobile, password, cpassword } = req.body;
+  if (!fname || !lname || !email || !mobile || !password || !cpassword) {
     return res.status(422).json({ error: "All fields are mandatory" });
   }
   try {
     const userExist = await User.findOne({ email: email });
     if (userExist) {
       return res.status(409).json({ error: "Email already exists" });
+    } else if (password != cpassword) {
+      return res.status(401).json({ error: "password doesn't match" });
     } else {
       const user = new User({
+        fname,
+        lname,
         email,
+        mobile,
         password,
+        cpassword,
       });
 
       await user.save();
@@ -61,6 +69,7 @@ router.post("/signup1", async (req, res) => {
 
 router.post("/login", async (req, res) => {
   try {
+    let token;
     const { text, password } = req.body;
     if (!text || !password) {
       return res.status(400).json({ message: "all fields are mandatory" });
@@ -69,6 +78,14 @@ router.post("/login", async (req, res) => {
     const userExist = await User.findOne({ email: text });
     if (userExist) {
       const isMatch = await bcrypt.compare(password, userExist.password);
+      token = await userExist.generateAuthToken();
+      console.log(token);
+
+      res.cookie("jwtoken", token),{
+        expires:new Date(Date.now() + 25892000000), 
+        httpOnly:true
+      }
+
       if (!isMatch) {
         res.status(400).json({ message: "Invalid Credentials" });
       } else {
@@ -82,4 +99,10 @@ router.post("/login", async (req, res) => {
   }
 });
 
+router.get("/users", authenticate , (req, res)=> {
+  // User.find().then((data) => {
+  //   res.status(201).json(data);
+  // });
+  res.send(req.rootUser)
+});
 module.exports = router;

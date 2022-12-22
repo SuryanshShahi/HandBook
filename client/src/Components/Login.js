@@ -103,10 +103,10 @@ function Login() {
             <div className="" style={{ width: "314px" }}>
               <span
                 className="fa fa-book fa-4x text-center"
-                style={{ color: "#00a82d" }}
+                style={{ color: "#5082ff" }}
               ></span>
               <div className="" style={{ fontWeight: "700", fontSize: "48px" }}>
-                <span style={{ color: "#00a82d" }}>Hand</span>Book
+                <span style={{ color: "#5082ff" }}>Hand</span>Book
               </div>
               <div
                 className="my-2"
@@ -187,8 +187,8 @@ function Login() {
                 }}
               />
               <div
-                className="btn btn-success w-100 align-items-center justify-content-center d-flex mt-3"
-                style={{ height: "45px", background: "rgb(0, 168, 45)" }}
+                className="btn btn-primary border-0 w-100 align-items-center justify-content-center d-flex mt-3"
+                style={{ height: "45px", background: "#5082ff" }}
                 onClick={PostData}
               >
                 Continue
@@ -209,7 +209,7 @@ function Login() {
                 <div
                   className="mt-2"
                   style={{
-                    color: "#00a82d",
+                    color: "#5082ff",
                     cursor: "pointer",
                     fontWeight: "500",
                     fontSize: "16px",

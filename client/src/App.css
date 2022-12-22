@@ -20,6 +20,18 @@ body {
 ::-webkit-scrollbar {
   width: 8px;
 }
+input[type="submit"]:focus {
+  background-color: none !important;
+}
+textarea {
+  transition: linear 0.3s !important;
+  border-bottom: 2px solid transparent;
+}
+textarea:focus {
+  color: white;
+  outline: none !important;
+  border-bottom: 2px solid #5082ff !important;
+}
 input[type="file"]::-webkit-file-upload-button {
   cursor: pointer;
 }
@@ -103,6 +115,35 @@ input[type="file"]::-webkit-file-upload-button {
   to {
     bottom: 0;
     opacity: 1;
+  }
+}
+
+#Profilespinner {
+  z-index: 1;
+  width: 29px;
+  height: 29px;
+  border: 3.5px solid #5082ff;
+  border-radius: 50%;
+  border-top: 3.5px solid transparent;
+  -webkit-animation: spin 0.7s linear infinite;
+  animation: spin 0.7s linear infinite;
+}
+
+@-webkit-keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
   }
 }
 /* ------------------------------------Login------------------------------------ */
@@ -200,6 +241,7 @@ button:focus {
   outline: none !important;
   border-bottom: 2px solid #5082ff;
 }
+
 .datepicker:hover {
   background-color: rgba(0, 0, 0, 0.09);
 }
@@ -340,15 +382,43 @@ audio {
   display: flex;
 }
 
-
-.react-pdf__Page{
-  position: absolute !important;
-  top: 122px;
+/* ----------------------------------------------------Profile-------------------------------------------------- */
+#profile {
+  background: url("./Images/download.png") no-repeat;
+  transition: opacity 0.4s ease 0s, transform 200ms ease-out 0s,
+    background-position 200ms linear 0s, filter 800ms ease-in 0s;
+  filter: initial;
+  background-position: 60% 80%;
+  background-attachment: fixed;
 }
-/* .react-pdf__Page__textContent{
-  display: none !important ;
-} */
-.react-pdf__Document,.react-pdf__Page__canvas{
-  height: 250px !important;
-  width: 250px !important;
+
+/* -----------------------------------------------------pdfViewer----------------------------------------------------- */
+.rpv-core__viewer {
+  height: 93vh !important;
+}
+
+.css-19mk8g1-MuiInputBase-root-MuiFilledInput-root {
+  color: white !important;
+}
+.css-e4w4as-MuiFormLabel-root-MuiInputLabel-root {
+  color: rgba(255, 255, 255, 0.28) !important;
+}
+.css-o943dk-MuiFormLabel-root-MuiInputLabel-root {
+  color: rgba(255, 255, 255, 0.28);
+}
+
+/* -----------------------------------------------------transaction----------------------------------------------------- */
+
+th,
+td {
+  padding: 8px 16px;
+  border: 1px solid grey;
+}
+th {
+  background-color: #172337;
+  color: white;
+}
+#transactions .tab.active{
+  background-color: #0d6efd;
+  color: white;
 }
