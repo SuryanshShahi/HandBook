@@ -377,9 +377,8 @@ button:focus {
   transition: all 0.2s ease-in;
 }
 audio {
-  margin-left: 22%;
-  margin-top: -100px;
-  display: flex;
+  display: block;
+  margin-top: 10px;
 }
 
 /* ----------------------------------------------------Profile-------------------------------------------------- */
@@ -411,14 +410,52 @@ audio {
 
 th,
 td {
-  padding: 8px 16px;
-  border: 1px solid grey;
+  padding: 16px;
+  text-align: center;
+  border: 1px solid #eee;
 }
 th {
-  background-color: #172337;
+  background-color: black;
   color: white;
 }
-#transactions .tab.active{
-  background-color: #0d6efd;
-  color: white;
+#transactions .tab.active {
+  border-bottom: 3px solid #5082ff !important;
+  color: #5082ff !important;
+}
+#transactions .tab:hover {
+  outline: none !important;
+}
+tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+.nav-item:hover .dropdown-menu {
+  display: block;
+  animation: drop 0.4s linear forwards;
+}
+@keyframes drop {
+  0% {
+    opacity: 0;
+    transform: translateY(8%);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.dropdown-menu {
+  opacity: 1;
+  width: fit-content;
+  left: -124px;
+  padding: 0;
+  margin: 0;
+  top: 40px;
+}
+.dropdown-menu li {
+  padding: 4px 0px;
+  cursor: pointer;
+}
+.dropdown-menu li:hover {
+  color: #5082ff !important;
 }

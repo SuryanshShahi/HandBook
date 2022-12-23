@@ -6,7 +6,7 @@ import Divider from "@mui/material/Divider";
 import Drawer from "@mui/material/Drawer";
 import IconButton from "@mui/material/IconButton";
 import Toolbar from "@mui/material/Toolbar";
-import Image from "../Images/image.png";
+import ImageUpload from "../Images/image.png";
 import Audio from "../Images/audio.png";
 import Doc from "../Images/document.png";
 import Email from "../Images/emails.png";
@@ -35,11 +35,12 @@ import { AudioRecorder, useAudioRecorder } from "react-audio-voice-recorder";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import emailjs from "@emailjs/browser";
-import { ProgressBar, Viewer, Worker } from "@react-pdf-viewer/core";
+import { Viewer, Worker } from "@react-pdf-viewer/core";
 import { defaultLayoutPlugin } from "@react-pdf-viewer/default-layout";
 import "@react-pdf-viewer/core/lib/styles/index.css";
 import "@react-pdf-viewer/default-layout/lib/styles/index.css";
 import { NavLink, useHistory } from "react-router-dom";
+
 const getEditor = () => {
   let list1 = localStorage.getItem("list1");
   if (list1) {
@@ -94,7 +95,7 @@ function ResponsiveDrawer() {
   };
 
   const changeNavbar = () => {
-    if (window.scrollY > 150) {
+    if (window.scrollY > 250) {
       setNavbar(false);
     } else {
       setNavbar(true);
@@ -205,7 +206,7 @@ function ResponsiveDrawer() {
                 className="fa fa-envelope-o"
                 style={{ paddingRight: "20px" }}
               />
-              Inbox
+              Compose Email
             </div>
           </li>
           <li className="py-2" style={{ width: "100%" }}>
@@ -365,6 +366,7 @@ function ResponsiveDrawer() {
   const closeEditor = () => {
     setdrawerWidth(266);
     document.body.style.background = "black";
+    document.getElementById("navbar").style.display = "block";
     setActive(false);
   };
   const showEditor = () => {
@@ -422,10 +424,11 @@ function ResponsiveDrawer() {
   };
 
   // ------------------------------------------------------------------------------------------------------------------
-  // ---------------------------------------------------File Upload-------------------------------------------------------
+  // ---------------------------------------------------Image Upload-------------------------------------------------------
   // ------------------------------------------------------------------------------------------------------------------
 
   const [file, setFile] = useState(getImages());
+  const [Image, setImage] = useState([]);
   const handleChange = (e) => {
     console.log(e.target.files);
     const selectedFiles = Array.from(e.target.files);
@@ -439,7 +442,22 @@ function ResponsiveDrawer() {
       className: "toast-message",
     });
   };
+  const viewImage = (item) => {
+    const selectedImage = file.filter((e) => {
+      if (item === e) {
+        return item;
+      }
+    });
+    setImage(selectedImage);
+  };
 
+  const removeImage = (image) => {
+    setFile(file.filter((e) => e !== image));
+    toast.success("Item Removed !", {
+      position: toast.POSITION.BOTTOM_RIGHT,
+      className: "toast-message",
+    });
+  };
   // ------------------------------------------------------------------------------------------------------------------
   // ---------------------------------------------------Doc Upload-------------------------------------------------------
   // ------------------------------------------------------------------------------------------------------------------
@@ -480,6 +498,13 @@ function ResponsiveDrawer() {
     });
     setOpen(selectedDoc.toString());
   };
+  const removeDoc = (document) => {
+    setDoc(docItem.filter((e) => e !== document));
+    toast.success("Item Removed !", {
+      position: toast.POSITION.BOTTOM_RIGHT,
+      className: "toast-message",
+    });
+  };
 
   // ------------------------------------------------------------------------------------------------------------------
   // ---------------------------------------------------Recorder-------------------------------------------------------
@@ -491,15 +516,21 @@ function ResponsiveDrawer() {
     const audio = document.createElement("audio");
     audio.src = url;
     audio.controls = true;
-    document.body.appendChild(audio);
+    document.getElementById("saveAudio").appendChild(audio);
+    document.getElementById("audioBg").style.display = "none";
+    document.getElementById("audioBtn").style.display = "block";
   };
 
+  useEffect(() => {
+    document.getElementById("audioBg").style.display = "block";
+    document.getElementById("audioBtn").style.display = "none";
+  }, []);
   // ------------------------------------------------------------------------------------------------------------------
   // -------------------------------------------------Transaction------------------------------------------------------
   // ------------------------------------------------------------------------------------------------------------------
 
   const [transaction, setTrasaction] = useState({
-    id:new Date().getTime()
+    id: new Date().getTime(),
   });
   // const [transaction, setTrasaction] = useState(getTransactions());
   const [details, setDetails] = useState(getTransactions());
@@ -514,17 +545,60 @@ function ResponsiveDrawer() {
 
   const addItems = () => {
     setDetails([...details, transaction]);
-    // console.log(transaction);
-    // console.log(details);
   };
   useEffect(() => {
     console.log(details);
+    success();
   }, [details]);
+
+  const [successfull, setSuccessfull] = useState(Number);
+  const [failed, setFailed] = useState(Number);
+  const [pending, setPending] = useState(Number);
+  const success = () => {
+    const totalSuccess = details.filter(
+      (e) => e.status === "Successful"
+    ).length;
+
+    const totalFailed = details.filter((e) => e.status === "Failed").length;
+
+    const totalPending = details.filter((e) => e.status === "Pending").length;
+
+    setSuccessfull(totalSuccess);
+    setFailed(totalFailed);
+    setPending(totalPending);
+  };
+  const month = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+  const [actualData, setActualData] = useState([]);
+  const lineChart = () => {
+    const output = details.map((e) => {
+      const res = new Date(e.date);
+      let name = month[res.getMonth()];
+      return { amount: e.amount, month: name };
+    });
+    setActualData(output);
+  };
+  useEffect(() => {
+    console.log(actualData);
+  }, [actualData]);
   // ------------------------------------------------------------------------------------------------------------------
   // ------------------------------------------------------------------------------------------------------------------
   // ------------------------------------------------------------------------------------------------------------------
 
   useEffect(() => {
+    lineChart();
     localStorage.setItem("list1", JSON.stringify(text));
     localStorage.setItem("list2", JSON.stringify(file));
     localStorage.setItem("list4", JSON.stringify(doc));
@@ -565,19 +639,97 @@ function ResponsiveDrawer() {
                 }}
               >
                 <div className=" mb-lg-0 mb-3" style={{ fontSize: "25px" }}>
-                  Good Morning, {userData.fname}!
+                  Good{" "}
+                  {new Date().setHours(12, 0, 0, 0) < new Date().getTime()
+                    ? "Afternoon"
+                    : "Morning"}
+                  , {userData.fname} !
                 </div>
                 <div
                   className="px-lg-5 px-md-5 px-3 mb-lg-0 mb-2"
                   id="dateandtime"
                   style={{ marginLeft: "auto", fontSize: "17px" }}
                 ></div>
-                <NavLink to="/profile">
-                  <div className="btn btn-dark">
-                    <span className="fa fa-user-circle mr-2"></span>
-                    &nbsp;Profile
+                <div
+                  className="px-2 navbar-nav"
+                  id="loginProfileIcon"
+                  style={{ width: "fit-content" }}
+                >
+                  <div className="text-center position-relative justify-content-center d-flex nav-item align-items-center d-lg-flex">
+                    <NavLink to="">
+                      <div className="btn btn-dark">
+                        <span className="fa fa-user-circle mr-2"></span>
+                        &nbsp;{userData.fname || "Profile"}
+                      </div>
+                    </NavLink>
+                    <div className="dropdown-menu bg-transparent rounded-0 text-white border-0 position-absolute">
+                      <div
+                        className="p-3"
+                        style={{
+                          width: "15vw",
+                          boxShadow: "0 1px 10px rgb(0 0 0 / 8%)",
+                          background: "rgb(26,26,26)",
+                        }}
+                      >
+                        <ul
+                          className="list-unstyled text-white m-0"
+                          style={{ fontSize: "14px" }}
+                        >
+                          <NavLink
+                            to="/profile"
+                            className="text-decoration-none text-white"
+                          >
+                            <div style={{ bottom: "1px solid #8080804d" }}>
+                              <div className="" style={{ fontWeight: "600" }}>
+                                Hello! {userData.fname}
+                              </div>
+                              <div
+                                className="mb-1"
+                                style={{ fontWeight: "400", fontSize: "13px" }}
+                              >
+                                {userData.email}
+                              </div>
+                            </div>
+                          </NavLink>
+
+                          <hr style={{ color: "#A9ABB3" }}></hr>
+                          <li style={{ marginTop: "12px" }}>Home</li>
+                          <li>Compose Email</li>
+                          <li>DropBox</li>
+                          <li>Calendar</li>
+                          <li>Transaction</li>
+                          <li onClick={showEditor}>
+                            Text Editor
+                            <span
+                              className="bg-primary rounded-pill text-white ml-3"
+                              style={{ fontSize: "10px", padding: "2px 5px" }}
+                            >
+                              New
+                            </span>
+                          </li>
+                          <hr style={{ color: "#A9ABB3" }}></hr>
+                          <li>Edit Profile</li>
+                          <NavLink
+                            to="/logout"
+                            id="logout"
+                            className="text-decoration-none"
+                            style={{ color: "white" }}
+                            onMouseOver={() => {
+                              document.getElementById("logout").style.color =
+                                "#5082ff";
+                            }}
+                            onMouseLeave={() => {
+                              document.getElementById("logout").style.color =
+                                "white";
+                            }}
+                          >
+                            Logout
+                          </NavLink>
+                        </ul>
+                      </div>
+                    </div>
                   </div>
-                </NavLink>
+                </div>
               </div>
               <IconButton
                 className="position-absolute p-4 fa fa-bars"
@@ -1008,7 +1160,7 @@ function ResponsiveDrawer() {
                                 >
                                   <div className="text-center">
                                     <img
-                                      src={Image}
+                                      src={ImageUpload}
                                       className="img-fluid"
                                       style={{ width: "7vw" }}
                                     />
@@ -1178,11 +1330,11 @@ function ResponsiveDrawer() {
                             className="text-center text-primary"
                             style={{ fontSize: "30px" }}
                           >
-                            Send <span className="text-white">Email</span>
+                            Compose <span className="text-white">Email</span>
                           </div>
                           <hr
                             className="mx-auto text-white"
-                            style={{ width: "50px", paddingTop: "2px" }}
+                            style={{ width: "70px", paddingTop: "2px" }}
                           ></hr>
                           <div className="row mt-5 mx-3">
                             <div className="col-8 gx-0">
@@ -1236,7 +1388,7 @@ function ResponsiveDrawer() {
                                   </div>
                                   <input
                                     type="submit"
-                                    className="btn btn-primary"
+                                    className="btn btn-primary mt-3"
                                     value="Send"
                                   />
                                 </div>
@@ -1382,7 +1534,7 @@ function ResponsiveDrawer() {
                                 {file.length === 0 ? (
                                   <div className="text-center position-relative">
                                     <img
-                                      src={Image}
+                                      src={ImageUpload}
                                       className="img-fluid"
                                       style={{ width: "7vw" }}
                                     />
@@ -1495,7 +1647,7 @@ function ResponsiveDrawer() {
                                               }}
                                             >
                                               <div
-                                                className="position-absolute fa fa-trash-o p-3 deleteImg text-white"
+                                                className="position-absolute fa fa-expand p-3 deleteImg text-white"
                                                 style={{
                                                   color: "white",
                                                   left: "35%",
@@ -1506,18 +1658,49 @@ function ResponsiveDrawer() {
                                                   lineHeight: "0",
                                                   cursor: "pointer",
                                                 }}
-                                                onClick={() =>
-                                                  setFile(
-                                                    file.filter(
-                                                      (e) => e !== image
-                                                    )
-                                                  )
-                                                }
+                                                data-target="#mymodal5"
+                                                data-toggle="modal"
+                                                onClick={() => viewImage(image)}
                                               ></div>
+                                              <div className="justify-content-center d-flex align-items-center">
+                                                <div
+                                                  className="ml-auto text-white fa fa-trash-o hideText"
+                                                  style={{
+                                                    cursor: "pointer",
+                                                  }}
+                                                  onClick={() =>
+                                                    removeImage(image)
+                                                  }
+                                                ></div>
+                                              </div>
                                             </div>
                                           </div>
                                         );
                                       })}
+                                      <div className="modal fade" id="mymodal5">
+                                        <div className="modal-dialog">
+                                          <div
+                                            className="modal-content border-0 justify-content-center d-flex position-relative align-content-center bg-transparent"
+                                            style={{ height: "93vh" }}
+                                          >
+                                            {Image.map((e) => {
+                                              return (
+                                                <div className="text-center">
+                                                  <img
+                                                    src={e}
+                                                    className="img-fluid"
+                                                    style={{
+                                                      boxShadow:
+                                                        "0px 0px 3px 2px #00000038",
+                                                      maxHeight: "100%",
+                                                    }}
+                                                  />
+                                                </div>
+                                              );
+                                            })}
+                                          </div>
+                                        </div>
+                                      </div>
                                     </div>
                                   </div>
                                 )}
@@ -1679,11 +1862,7 @@ function ResponsiveDrawer() {
                                                 cursor: "pointer",
                                               }}
                                               onClick={() =>
-                                                setDoc(
-                                                  docItem.filter(
-                                                    (e) => e !== document
-                                                  )
-                                                )
+                                                removeDoc(document)
                                               }
                                             >
                                               &times;
@@ -1700,14 +1879,33 @@ function ResponsiveDrawer() {
 
                           <div
                             id="audio1"
-                            className="tab-pane"
-                            style={{ height: "100%" }}
+                            className="tab-pane position-relative"
+                            style={{ height: "75vh" }}
                           >
+                            <div
+                              id="audioBtn"
+                              className="btn btn-dark bg-transparent px-4 text-primary imageBtn"
+                              style={{
+                                fontWeight: "500",
+                                border: "1px solid #737373",
+                                display: "none",
+                                width: "fit-content",
+                              }}
+                              data-target="#mymodal2"
+                              data-toggle="modal"
+                            >
+                              Record Audio
+                            </div>
+                            <div
+                              id="saveAudio"
+                              className="position-absolute mt-5"
+                              style={{ top: "15px" }}
+                            ></div>
                             <div
                               className="justify-content-center d-flex align-items-center"
                               style={{ height: "100%" }}
                             >
-                              <div className="text-center">
+                              <div className="text-center" id="audioBg">
                                 <img
                                   src={Audio}
                                   className="img-fluid"
@@ -1777,7 +1975,7 @@ function ResponsiveDrawer() {
                           <div
                             id="emails1"
                             className="tab-pane"
-                            style={{ height: "100%" }}
+                            style={{ height: "75vh" }}
                           >
                             <div
                               className="justify-content-center d-flex align-items-center"
@@ -1993,332 +2191,477 @@ function ResponsiveDrawer() {
                           data-target="#mymodal4"
                           data-toggle="modal"
                         >
-                          add transactions
+                          Add Transactions
                         </div>
-<div className="bg-white text-dark">
-                        <div className="nav nav-tabs border-0 text-dark">
-                          <li className="nav-item py-2">
-                            <div
-                              className="active p-3 tab align-items-center d-flex"
-                              type="button"
-                              data-toggle="tab"
-                              href="#table"
-                            >
-                              Home
+                        <div className="text-dark">
+                          <ul className="nav nav-tabs border-0 justify-content-center">
+                            <li className="nav-item">
+                              <div
+                                className="nav-link border-0 bg-transparent tab active"
+                                style={{
+                                  height: "40px",
+                                  color: "white",
+                                  fontWeight: "500",
+                                }}
+                                data-toggle="tab"
+                                data-target="#table"
+                                type="button"
+                              >
+                                {" "}
+                                Tabular View
+                              </div>
+                            </li>
+                            <li className="nav-item">
+                              <div
+                                className="nav-link border-0 bg-transparent tab"
+                                style={{
+                                  height: "40px",
+                                  color: "white",
+                                  fontWeight: "500",
+                                }}
+                                data-toggle="tab"
+                                data-target="#graph"
+                                type="button"
+                              >
+                                {" "}
+                                Graphical View
+                              </div>
+                            </li>
+                          </ul>
+
+                          <div
+                            className="bg-white my-4"
+                            style={{ borderRadius: "15px" }}
+                          >
+                            <div className="d-flex align-items-center p-3">
+                              <div className="mr-4">
+                                <TextField
+                                  type="text"
+                                  label="Name"
+                                  name="name"
+                                  onChange={handleTransaction}
+                                  value={transaction.name}
+                                  variant="outlined"
+                                  color="primary"
+                                />
+                              </div>
+                              <div className="mx-4">
+                                <TextField
+                                  type="text"
+                                  label="Transation Amount"
+                                  name="amount"
+                                  onChange={handleTransaction}
+                                  value={transaction.amount}
+                                  variant="outlined"
+                                  color="primary"
+                                />
+                              </div>
+                              <div className="mx-4">
+                                <input
+                                  type="date"
+                                  name="date"
+                                  className="form-control shadow-none"
+                                  style={{ height: "56px" }}
+                                  onChange={handleTransaction}
+                                  value={transaction.date}
+                                />
+                              </div>
+                              <div className="mx-4 d-flex align-items-center">
+                                <input
+                                  className="form-check mr-2"
+                                  name="status"
+                                  type="radio"
+                                  value="Successful"
+                                  onChange={handleTransaction}
+                                  style={{ width: "20px", cursor: "pointer" }}
+                                />
+                                <label>Successful</label>
+                              </div>
+                              <div className="mx-4 d-flex align-items-center">
+                                <input
+                                  className="form-check mr-2"
+                                  name="status"
+                                  type="radio"
+                                  value="Failed"
+                                  onChange={handleTransaction}
+                                  style={{ width: "20px", cursor: "pointer" }}
+                                />
+                                <label>Failed</label>
+                              </div>
+                              <div className="mx-4 d-flex align-items-center">
+                                <input
+                                  className="form-check mr-2"
+                                  name="status"
+                                  type="radio"
+                                  value="Pending"
+                                  onChange={handleTransaction}
+                                  style={{ width: "20px", cursor: "pointer" }}
+                                />
+                                <label>Pending</label>
+                              </div>
+                              <button
+                                className="btn btn-primary ml-auto ml-4 p-3 shadow border-0"
+                                onClick={addItems}
+                                data-dismiss="modal"
+                                style={{
+                                  background: "rgb(53 102 223)",
+                                  borderRadius: "10px",
+                                }}
+                              >
+                                Submit
+                              </button>
                             </div>
-                          </li>
-                          <li className="py-2 nav-item">
+                          </div>
+                          <div className="tab-content">
                             <div
-                              className="p-3 tab align-items-center d-flex text-dark"
-                              type="button"
-                              data-toggle="tab"
-                              href="#graph"
+                              id="table"
+                              className="active tab-pane fade show"
                             >
-                              Inbox
-                            </div>
-                          </li>
-                        </div>
-                        <div className="tab-content">
-                          <div id="table" className="active tab-pane">
-                            <table>
-                              <tr>
-                                <th>S.No</th>
-                                <th>User Name</th>
-                                <th>Transaction ID</th>
-                                <th>Transaction Status</th>
-                                <th>Transaction Date</th>
-                                <th>Transaction Amount</th>
-                              </tr>
-                              {details.map((e)=>{
-                                console.log(details);
-                             
-                                return(
-                                  <tr>
-                                    <td>{count++}</td>
-                                    <td>{e.name}</td>
-                                    <td>{e.id}</td>
-                                    <td>{e.status}</td>
-                                    <td>{e.date}</td>
-                                    <td>{e.amount}</td>
+                              <div
+                                className="justify-content-center overflow-auto"
+                                style={{ height: "55vh" }}
+                              >
+                                <table className="bg-white w-100">
+                                  <tr style={{ top: "0", position: "sticky" }}>
+                                    <th>S.No</th>
+                                    <th>User Name</th>
+                                    <th>Transaction ID</th>
+                                    <th>Transaction Status</th>
+                                    <th>Transaction Date</th>
+                                    <th>Transaction Amount</th>
                                   </tr>
-                              )})}
-                            </table>
-                          </div>
-                          <div id="graph" className="tab-pane fade">
-                            <div className="row">
-                              <div className="col-lg-4 col-md-4 col-sm-6 col-12 mb-lg-0 mb-md-0 mb-4">
-                                <div
-                                  className="py-4 rounded border-0 text-white"
-                                  style={{
-                                    background: "#262626",
-                                    boxShadow: "0 1px 6px rgba(0,0,0,0.2)",
-                                    minHeight: "196px",
-                                  }}
-                                >
-                                  <div className="container">
-                                    <div className="row">
-                                      <div className="col-lg-6 col-md-12 col-12">
-                                        <h5>Successful Transactions</h5>
-                                        <h4 className="font-weight-bold">
-                                          7956
-                                        </h4>
-                                        <div className="color">
-                                          <div className="fa fa-arrow-up fa-rotate-45 fa-lg font-weight-lighter pt-1"></div>
-                                          <h6 className="px-4 pt-1">+0.6%</h6>
+                                  {details.reverse().map((e, key) => {
+                                    let count = details.length;
+                                    return (
+                                      <tr>
+                                        <td>{key + 1}</td>
+                                        <td>{e.name}</td>
+                                        <td>{e.id}</td>
+                                        <td>{e.status}</td>
+                                        <td>{e.date}</td>
+                                        <td>{e.amount}</td>
+                                      </tr>
+                                    );
+                                  })}
+                                </table>
+                              </div>
+                            </div>
+                            <div id="graph" className="tab-pane fade">
+                              <div className="row">
+                                <div className="col-lg-4 col-md-4 col-sm-6 col-12 mb-lg-0 mb-md-0 mb-4">
+                                  <div
+                                    className="py-4 rounded border-0 text-white"
+                                    style={{
+                                      background: "#262626",
+                                      boxShadow: "0 1px 6px rgba(0,0,0,0.2)",
+                                      minHeight: "196px",
+                                    }}
+                                  >
+                                    <div className="container">
+                                      <div className="row">
+                                        <div className="col-lg-6 col-md-12 col-12">
+                                          <h5>Successful Transactions</h5>
+                                          <h4 className="font-weight-bold">
+                                            {successfull || 7956}
+                                          </h4>
+                                          <div className="color">
+                                            <div className="fa fa-arrow-up fa-rotate-45 fa-lg font-weight-lighter pt-1"></div>
+                                            <h6 className="px-4 pt-1">
+                                              +
+                                              {Math.round(
+                                                (successfull / details.length) *
+                                                  100
+                                              ) / 100 || 0.6}
+                                              %
+                                            </h6>
+                                          </div>
                                         </div>
-                                      </div>
-                                      <div className="col-lg-6 col-md-12 col-12 d-flex justify-content-end">
-                                        <div style={{ width: "120px" }}>
-                                          <CircularProgressbar
-                                            value={72}
-                                            text={`${72}%`}
-                                            styles={buildStyles({
-                                              pathColor: "#4343cb",
-                                              textColor: "#4343cb",
-                                              trailColor: "grey",
-                                            })}
-                                          />
+                                        <div className="col-lg-6 col-md-12 col-12 d-flex justify-content-end">
+                                          <div style={{ width: "120px" }}>
+                                            <CircularProgressbar
+                                              value={
+                                                (successfull / details.length) *
+                                                  100 || 72
+                                              }
+                                              text={`${
+                                                Math.round(
+                                                  (successfull /
+                                                    details.length) *
+                                                    100
+                                                ) || 72
+                                              }%`}
+                                              styles={buildStyles({
+                                                pathColor: "#4343cb",
+                                                textColor: "#4343cb",
+                                                trailColor: "grey",
+                                              })}
+                                            />
+                                          </div>
                                         </div>
                                       </div>
                                     </div>
                                   </div>
                                 </div>
-                              </div>
-                              <div className="col-lg-4 col-md-4 col-sm-6 col-12 mb-lg-0 mb-md-0 mb-4">
-                                <div
-                                  className="py-4 rounded border-0 text-white"
-                                  style={{
-                                    background: "#262626",
-                                    boxShadow: "0 1px 6px rgba(0,0,0,0.2)",
-                                    minHeight: "196px",
-                                  }}
-                                >
-                                  <div className="container">
-                                    <div className="row ">
-                                      <div className="col-lg-6 col-md-12 col-12 ">
-                                        <h5>Pending Transactions</h5>
-                                        <h4 className="font-weight-bold">
-                                          4658
-                                        </h4>
-                                        <div className="">
-                                          <div className="fa fa-arrow-up fa-rotate-45 fa-lg font-weight-lighter text-white pt-1"></div>
-                                          <h6 className="px-4 pt-1">+0.6%</h6>
+                                <div className="col-lg-4 col-md-4 col-sm-6 col-12 mb-lg-0 mb-md-0 mb-4">
+                                  <div
+                                    className="py-4 rounded border-0 text-white"
+                                    style={{
+                                      background: "#262626",
+                                      boxShadow: "0 1px 6px rgba(0,0,0,0.2)",
+                                      minHeight: "196px",
+                                    }}
+                                  >
+                                    <div className="container">
+                                      <div className="row ">
+                                        <div className="col-lg-6 col-md-12 col-12 ">
+                                          <h5>Pending Transactions</h5>
+                                          <h4 className="font-weight-bold">
+                                            {pending || 4658}
+                                          </h4>
+                                          <div className="">
+                                            <div className="fa fa-arrow-up fa-rotate-45 fa-lg font-weight-lighter text-white pt-1"></div>
+                                            <h6 className="px-4 pt-1">
+                                              +
+                                              {Math.round(
+                                                (pending / details.length) * 100
+                                              ) / 100 || 0.6}
+                                              %
+                                            </h6>
+                                          </div>
                                         </div>
-                                      </div>
-                                      <div className="col-lg-6 col-md-12 col-12 d-flex justify-content-end">
-                                        <div style={{ width: "120px" }}>
-                                          <CircularProgressbar
-                                            value={8}
-                                            text={`${8}%`}
-                                            styles={buildStyles({
-                                              pathColor: "#ff9800",
-                                              textColor: "#ff9800",
-                                              trailColor: "grey",
-                                            })}
-                                          />
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                              <div className="col-lg-4 col-md-4 col-sm-6 col-12 mb-lg-0 mb-md-0 mb-4">
-                                <div
-                                  className="py-4 rounded border-0 text-white"
-                                  style={{
-                                    background: "#262626",
-                                    boxShadow: "0 1px 6px rgba(0,0,0,0.2)",
-                                    minHeight: "196px",
-                                  }}
-                                >
-                                  <div className="container">
-                                    <div className="row">
-                                      <div className="col-lg-6 col-md-12 col-12">
-                                        <h5>Failed Transactions</h5>
-                                        <h4 className="font-weight-bold">
-                                          1501
-                                        </h4>
-                                        <div className="color1">
-                                          <div className="fa fa-arrow-up fa-rotate-45 fa-lg  font-weight-lighter pt-1"></div>
-                                          <h6 className="px-4 pt-1">+0.6%</h6>
-                                        </div>
-                                      </div>
-                                      <div className="col-lg-6 col-md-12 col-12 d-flex justify-content-end">
-                                        <div style={{ width: "120px" }}>
-                                          <CircularProgressbar
-                                            value={20}
-                                            text={`${20}%`}
-                                            styles={buildStyles({
-                                              pathColor: "#c02d2d",
-                                              textColor: "#c02d2d",
-                                              trailColor: "grey",
-                                            })}
-                                          />
+                                        <div className="col-lg-6 col-md-12 col-12 d-flex justify-content-end">
+                                          <div style={{ width: "120px" }}>
+                                            <CircularProgressbar
+                                              value={
+                                                (pending / details.length) *
+                                                  100 || 8
+                                              }
+                                              text={`${
+                                                Math.round(
+                                                  (pending / details.length) *
+                                                    100
+                                                ) || 8
+                                              }%`}
+                                              styles={buildStyles({
+                                                pathColor: "#ff9800",
+                                                textColor: "#ff9800",
+                                                trailColor: "grey",
+                                              })}
+                                            />
+                                          </div>
                                         </div>
                                       </div>
                                     </div>
                                   </div>
                                 </div>
-                              </div>
-
-                              <div className="col-lg-8 col-12 mt-lg-4 mt-md-4 mb-lg-0 mb-4">
-                                <div
-                                  className="rounded border-0 text-white"
-                                  style={{
-                                    background: "#262626",
-                                    boxShadow: "0 1px 6px rgba(0,0,0,0.2)",
-                                    height: "100%",
-                                  }}
-                                >
-                                  <nav className="navbar rounded navbar-expand-lg navbar-light">
-                                    <div className="container-fluid">
-                                      <a className="navbar-brand text-white">
-                                        Transactions
-                                      </a>
-
-                                      <ul className="navbar-nav">
-                                        <li className="nav-item">
-                                          <a
-                                            className="nav-link active text-white"
-                                            aria-current="page"
-                                            href="#"
-                                          >
-                                            This Year
-                                          </a>
-                                        </li>
-                                        <li className="nav-item">
-                                          <a
-                                            className="nav-link text-white"
-                                            href="#"
-                                          >
-                                            This Week
-                                          </a>
-                                        </li>
-                                        <li className="nav-item">
-                                          <a
-                                            className="nav-link text-white"
-                                            href="#"
-                                          >
-                                            Today
-                                          </a>
-                                        </li>
-                                      </ul>
+                                <div className="col-lg-4 col-md-4 col-sm-6 col-12 mb-lg-0 mb-md-0 mb-4">
+                                  <div
+                                    className="py-4 rounded border-0 text-white"
+                                    style={{
+                                      background: "#262626",
+                                      boxShadow: "0 1px 6px rgba(0,0,0,0.2)",
+                                      minHeight: "196px",
+                                    }}
+                                  >
+                                    <div className="container">
+                                      <div className="row">
+                                        <div className="col-lg-6 col-md-12 col-12">
+                                          <h5>Failed Transactions</h5>
+                                          <h4 className="font-weight-bold">
+                                            {failed || 1501}
+                                          </h4>
+                                          <div className="color1">
+                                            <div className="fa fa-arrow-up fa-rotate-45 fa-lg  font-weight-lighter pt-1"></div>
+                                            <h6 className="px-4 pt-1">
+                                              +
+                                              {Math.round(
+                                                (failed / details.length) * 100
+                                              ) / 100 || 0.6}
+                                              %
+                                            </h6>
+                                          </div>
+                                        </div>
+                                        <div className="col-lg-6 col-md-12 col-12 d-flex justify-content-end">
+                                          <div style={{ width: "120px" }}>
+                                            <CircularProgressbar
+                                              value={
+                                                (failed / details.length) *
+                                                  100 || 20
+                                              }
+                                              text={`${
+                                                Math.round(
+                                                  (failed / details.length) *
+                                                    100
+                                                ) || 20
+                                              }%`}
+                                              styles={buildStyles({
+                                                pathColor: "#c02d2d",
+                                                textColor: "#c02d2d",
+                                                trailColor: "grey",
+                                              })}
+                                            />
+                                          </div>
+                                        </div>
+                                      </div>
                                     </div>
-                                  </nav>
-                                  <div className="container">
-                                    <Line
-                                      className="chart w-100"
-                                      style={{ height: "100%" }}
-                                      data={{
-                                        labels: [
-                                          "jan",
-                                          "feb",
-                                          "mar",
-                                          "apr",
-                                          "may",
-                                          "jun",
-                                          "jul",
-                                          "aug",
-                                          "sept",
-                                          "oct",
-                                          "nov",
-                                          "dec",
-                                        ],
-                                        datasets: [
-                                          {
-                                            label: "Applications 2021",
-                                            data: [
-                                              1.5, 3, 3.2, 2.3, 4, 4.5, 3, 3.5,
-                                              5, 5.5, 4, 6,
-                                            ],
-                                            borderColor: [
-                                              "rgba(194, 44, 44, 0.87)",
-                                            ],
-                                            backgroundColor: [
-                                              "rgba(197, 60, 60, 0.596)",
-                                            ],
-                                            // pointBackgroundColor: [
-                                            //   "rgba(194, 44, 44, 0.87)",
-                                            //   "rgba(194, 44, 44, 0.87)",
-                                            //   "rgba(194, 44, 44, 0.87)",
-                                            //   "rgba(194, 44, 44, 0.87)",
-                                            //   "white",
-                                            // ],
+                                  </div>
+                                </div>
 
-                                            fontColor: ["White"],
-                                            fill: {
-                                              target: "origin",
-                                              above: "rgba(197, 60, 60, 0.596)",
+                                <div className="col-lg-8 col-12 mt-lg-4 mt-md-4 mb-lg-0 mb-4">
+                                  <div
+                                    className="rounded border-0 text-white"
+                                    style={{
+                                      background: "#262626",
+                                      boxShadow: "0 1px 6px rgba(0,0,0,0.2)",
+                                      height: "100%",
+                                    }}
+                                  >
+                                    <nav className="navbar rounded navbar-expand-lg navbar-light">
+                                      <div className="container-fluid">
+                                        <a className="navbar-brand text-white">
+                                          Transactions
+                                        </a>
+
+                                        <ul className="navbar-nav">
+                                          <li className="nav-item">
+                                            <a
+                                              className="nav-link active text-white"
+                                              aria-current="page"
+                                              href="#"
+                                            >
+                                              This Year
+                                            </a>
+                                          </li>
+                                          <li className="nav-item">
+                                            <a
+                                              className="nav-link text-white"
+                                              href="#"
+                                            >
+                                              This Week
+                                            </a>
+                                          </li>
+                                          <li className="nav-item">
+                                            <a
+                                              className="nav-link text-white"
+                                              href="#"
+                                            >
+                                              Today
+                                            </a>
+                                          </li>
+                                        </ul>
+                                      </div>
+                                    </nav>
+                                    <div className="container">
+                                      <Line
+                                        className="chart w-100"
+                                        style={{ height: "100%" }}
+                                        data={{
+                                          labels: month,
+                                          // labels: details.map((e) => e.status),
+                                          datasets: [
+                                            {
+                                              label: "Transactions 2022",
+                                              data: actualData.map(
+                                                (e) => e.amount
+                                              ),
+                                              borderColor: [
+                                                "rgba(194, 44, 44, 0.87)",
+                                              ],
+                                              backgroundColor: [
+                                                "rgba(197, 60, 60, 0.596)",
+                                              ],
+                                              // pointBackgroundColor: [
+                                              //   "rgba(194, 44, 44, 0.87)",
+                                              //   "rgba(194, 44, 44, 0.87)",
+                                              //   "rgba(194, 44, 44, 0.87)",
+                                              //   "rgba(194, 44, 44, 0.87)",
+                                              //   "white",
+                                              // ],
+
+                                              fontColor: ["White"],
+                                              fill: {
+                                                target: "origin",
+                                                above:
+                                                  "rgba(197, 60, 60, 0.596)",
+                                              },
                                             },
-                                          },
-                                          {
-                                            label: "Applications 2022",
+                                            {
+                                              label: "Transactions 2021",
 
-                                            data: [
-                                              3, 2.2, 2.7, 3.4, 2.5, 3.5, 4,
-                                              3.5, 5, 4.5, 4, 5,
-                                            ],
-                                            borderColor: [
-                                              "rgba(161, 223, 17, 0.568)",
-                                            ],
-                                            backgroundColor: [
-                                              "rgba(161, 223, 17, 0.568)",
-                                            ],
-                                            pointBackgroundColor: [
-                                              "rgba(161, 223, 17, 0.568)",
-                                              "rgba(161, 223, 17, 0.568)",
-                                              "rgba(161, 223, 17, 0.568)",
-                                              "rgba(161, 223, 17, 0.568)",
-                                              "white",
-                                            ],
-                                          },
-                                        ],
-                                        fontColor: "white",
-                                      }}
-                                    />
+                                              data: details.map(
+                                                (e) => e.status
+                                              ),
+                                              borderColor: [
+                                                "rgba(161, 223, 17, 0.568)",
+                                              ],
+                                              backgroundColor: [
+                                                "rgba(161, 223, 17, 0.568)",
+                                              ],
+                                              pointBackgroundColor: [
+                                                "rgba(161, 223, 17, 0.568)",
+                                                "rgba(161, 223, 17, 0.568)",
+                                                "rgba(161, 223, 17, 0.568)",
+                                                "rgba(161, 223, 17, 0.568)",
+                                                "white",
+                                              ],
+                                            },
+                                          ],
+                                          fontColor: "white",
+                                        }}
+                                      />
+                                    </div>
                                   </div>
                                 </div>
-                              </div>
 
-                              <div className="col-lg-4 col-12 mt-lg-4">
-                                <div
-                                  className="justify-content-center d-flex align-items-center border-0 text-white py-4"
-                                  style={{
-                                    background: "#262626",
-                                    boxShadow: "0 1px 6px rgba(0,0,0,0.2)",
-                                  }}
-                                >
-                                  <h5 className="mx-4 mt-5 position-absolute">
-                                    Transactions
-                                  </h5>
-                                  <div className="container">
-                                    <h5 className="font-weight-bold">
-                                      All Transactions
+                                <div className="col-lg-4 col-12 mt-lg-4">
+                                  <div
+                                    className="justify-content-center d-flex align-items-center border-0 text-white py-4"
+                                    style={{
+                                      background: "#262626",
+                                      boxShadow: "0 1px 6px rgba(0,0,0,0.2)",
+                                    }}
+                                  >
+                                    <h5 className="mx-4 mt-5 position-absolute">
+                                      Transactions
                                     </h5>
-                                    <Doughnut
-                                      className="doughnut justify-content-center d-flex pb-2 gx-0 my-auto"
-                                      data={{
-                                        datasets: [
-                                          {
-                                            label: "My First Dataset",
-                                            data: [72, 8, 20],
+                                    <div className="container">
+                                      <h5 className="font-weight-bold">
+                                        All Transactions
+                                      </h5>
+                                      <Doughnut
+                                        className="doughnut justify-content-center d-flex pb-2 gx-0 my-auto"
+                                        data={{
+                                          labels: [
+                                            "Successfull",
+                                            "Pending",
+                                            "Failed",
+                                          ],
 
-                                            backgroundColor: [
-                                              "purple",
-                                              "#dc3545",
-                                              "rgba(13, 124, 228, 0.808)",
-                                            ],
-                                            hoverOffset: 4,
-                                          },
-                                        ],
-                                      }}
-                                    />
+                                          datasets: [
+                                            {
+                                              label: "Transactions",
+                                              data: [
+                                                successfull,
+                                                pending,
+                                                failed,
+                                              ],
+
+                                              backgroundColor: [
+                                                "purple",
+                                                "#dc3545",
+                                                "rgba(13, 124, 228, 0.808)",
+                                              ],
+                                              hoverOffset: 4,
+                                            },
+                                          ],
+                                        }}
+                                      />
+                                    </div>
                                   </div>
                                 </div>
                               </div>
                             </div>
                           </div>
-                        </div>
                         </div>
                       </div>
 

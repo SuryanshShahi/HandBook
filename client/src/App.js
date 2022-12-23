@@ -9,6 +9,7 @@ import Login from "./Components/Login";
 import Signup from "./Components/Signup";
 import Calendar from "./Components/Calendar1";
 import Profile from "./Components/Profile";
+import Logout from "./Components/Logout";
 
 const App = () => {
   useEffect(() => {
@@ -24,6 +25,7 @@ const App = () => {
             <Route exact path="/signup" component={Signup} />
             <Route exact path="/calendar" component={Calendar} />
             <Route exact path="/profile" component={Profile} />
+            <Route exact path="/logout" component={Logout} />
           </Switch>
         </BrowserRouter>
       </div>

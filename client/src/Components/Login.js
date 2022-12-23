@@ -34,7 +34,7 @@ function Login() {
 
     const data = res.json();
     if (res.status === 201) {
-      toast.warning("Logged In !", {
+      toast.success("Login Successful !", {
         position: toast.POSITION.BOTTOM_RIGHT,
         className: "toast-login",
       });
@@ -109,56 +109,10 @@ function Login() {
                 <span style={{ color: "#5082ff" }}>Hand</span>Book
               </div>
               <div
-                className="my-2"
+                className="my-2 mb-5"
                 style={{ color: "#333333", fontSize: "16px" }}
               >
                 Remember everything important.
-              </div>
-              <div
-                className="d-flex align-items-center justify-content-center mt-5 p-2"
-                style={{
-                  border: "solid 1px #d0d0d0",
-                  borderRadius: "7px",
-                  cursor: "pointer",
-                  height: "45px",
-                }}
-              >
-                <img
-                  src={googleLogo}
-                  alt=""
-                  style={{ height: "18px", width: "18px" }}
-                />
-                <div className="ml-2" style={{ color: "#6a6a6a" }}>
-                  Continue with Google
-                </div>
-              </div>
-              <div
-                className="d-flex align-items-center justify-content-center p-2 mt-2"
-                style={{
-                  border: "solid 1px #d0d0d0",
-                  borderRadius: "7px",
-                  cursor: "pointer",
-                  height: "45px",
-                }}
-              >
-                <img
-                  src="https://www.evernote.com/redesign/OpenID/img/apple-logo_20.svg"
-                  alt=""
-                  style={{ height: "18px", width: "18px" }}
-                />
-                <div className="ml-2" style={{ color: "#6a6a6a" }}>
-                  Continue with Google
-                </div>
-              </div>
-              <div className="d-flex align-items-center my-3">
-                <hr style={{ color: "#ababab", width: "45%" }}></hr>
-                <div
-                  className="mx-3"
-                  style={{ color: "#ababab", fontSize: "14px" }}
-                >
-                  Or
-                </div>
-                <hr style={{ color: "#ababab", width: "45%" }}></hr>
               </div>
               <input
                 name="text"
@@ -166,7 +120,7 @@ function Login() {
                 value={text}
                 onChange={(e) => setText(e.target.value)}
                 className="form-control shadow-none"
-                placeholder="Enter email address or username"
+                placeholder="Enter email"
                 style={{
                   height: "45px",
                   boxShadow: "1px solid #e6e6e6",

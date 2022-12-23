@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const authenticate =require("./middleware/authenticate")
+const authenticate = require("./middleware/authenticate");
 
 require("./db/conn");
 const User = require("./model/userSchema");
@@ -32,35 +32,6 @@ router.post("/signup1", async (req, res) => {
 
       await user.save();
       res.status(201).json({ message: "user registered successfully" });
-
-      // var transporter = nodemailer.createTransport({
-      //   service: "gmail",
-      //   auth: {
-      //     user: process.env.EMAIL,
-      //     pass: process.env.PASS,
-      //   },
-      // });
-
-      // var mailOptions = {
-      //   from: process.env.EMAIL,
-      //   to: email,
-      //   subject: "Registraion Successfull",
-      //   text: `Welcome To CARS4U`,
-      //   attachments: [
-      //     {
-      //       filename: "cars4u.html",
-      //       path: "https://drive.google.com/uc?export=view&id=1Om7jFYz0x36OebV_DggkJgmhKkwdYP-N",
-      //     },
-      //   ],
-      // };
-
-      // transporter.sendMail(mailOptions, function (error, info) {
-      //   if (error) {
-      //     console.log(error);
-      //   } else {
-      //     console.log("Email sent: " + info.response);
-      //   }
-      // });
     }
   } catch (err) {
     console.log(err);
@@ -81,10 +52,11 @@ router.post("/login", async (req, res) => {
       token = await userExist.generateAuthToken();
       console.log(token);
 
-      res.cookie("jwtoken", token),{
-        expires:new Date(Date.now() + 25892000000), 
-        httpOnly:true
-      }
+      res.cookie("jwtoken", token),
+        {
+          expires: new Date(Date.now() + 25892000000),
+          httpOnly: true,
+        };
 
       if (!isMatch) {
         res.status(400).json({ message: "Invalid Credentials" });
@@ -99,10 +71,14 @@ router.post("/login", async (req, res) => {
   }
 });
 
-router.get("/users", authenticate , (req, res)=> {
+router.get("/users", authenticate, (req, res) => {
   // User.find().then((data) => {
   //   res.status(201).json(data);
   // });
-  res.send(req.rootUser)
+  res.send(req.rootUser);
+});
+router.get("/logout", authenticate, (req, res) => {
+  res.clearCookie("jwtoken", { path: "/" });
+  res.status(200).send("User Logged Out !");
 });
 module.exports = router;

@@ -351,7 +351,6 @@ function Profile() {
                                   <div className="col-6 my-3">
                                     <div>First Name:</div>
                                     <input
-                                      required
                                       type="text"
                                       className="form-control border-0 mt-2"
                                       name="fname"
@@ -368,7 +367,6 @@ function Profile() {
                                   <div className="col-6 my-3">
                                     <div>Last Name:</div>
                                     <input
-                                      required
                                       type="text"
                                       className="form-control border-0 mt-2"
                                       name="lname"
@@ -385,7 +383,6 @@ function Profile() {
                                   <div className="col-6 my-3">
                                     <div>Email:</div>
                                     <input
-                                      required
                                       type="email"
                                       className="form-control border-0 mt-2"
                                       name="email"
@@ -402,7 +399,6 @@ function Profile() {
                                   <div className="col-6 my-3">
                                     <div>Mobile:</div>
                                     <input
-                                      required
                                       type="tel"
                                       className="form-control border-0 mt-2"
                                       name="mobile"
@@ -444,7 +440,6 @@ function Profile() {
                                   <div className="col-12 my-3">
                                     <div>Address:</div>
                                     <input
-                                      required
                                       type="text"
                                       className="form-control border-0 mt-2"
                                       name="address"
@@ -461,7 +456,6 @@ function Profile() {
                                   <div className="col-4 my-3">
                                     <div>City:</div>
                                     <input
-                                      required
                                       type="text"
                                       className="form-control border-0 mt-2"
                                       name="city"
@@ -478,7 +472,6 @@ function Profile() {
                                   <div className="col-4 my-3">
                                     <div>Country:</div>
                                     <input
-                                      required
                                       type="text"
                                       className="form-control border-0 mt-2"
                                       name="country"
@@ -495,7 +488,6 @@ function Profile() {
                                   <div className="col-4 my-3">
                                     <div>Postal Code:</div>
                                     <input
-                                      required
                                       type="tel"
                                       className="form-control border-0 mt-2"
                                       name="postal"
