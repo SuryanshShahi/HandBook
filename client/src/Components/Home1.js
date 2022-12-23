@@ -103,20 +103,20 @@ function ResponsiveDrawer() {
   };
   window.addEventListener("scroll", changeNavbar);
 
-  // setInterval(() => {
-  //   document.getElementById("dateandtime").innerHTML = refreshDate(new Date());
-  // }, 1000);
+  setInterval(() => {
+    document.getElementById("dateandtime").innerHTML = refreshDate(new Date());
+  }, 60000);
 
-  // const refreshDate = (date) => {
-  //   return date.toLocaleString([], {
-  //     weekday: "long",
-  //     month: "2-digit",
-  //     day: "2-digit",
-  //     year: "2-digit",
-  //     hour: "2-digit",
-  //     minute: "2-digit",
-  //   });
-  // };
+  const refreshDate = (date) => {
+    return date.toLocaleString([], {
+      weekday: "long",
+      month: "2-digit",
+      day: "2-digit",
+      year: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
 
   const drawer = (
     <div>
